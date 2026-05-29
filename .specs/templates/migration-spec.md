@@ -66,7 +66,36 @@ SELECT COUNT(*) FROM <target>;
 |---|---|---|---|
 | <risk> | Low / Med / High | Low / Med / High | <plan> |
 
+## Tests
+
+> **TDD:** Write schema integrity and data migration tests BEFORE executing the migration.
+
+### Schema Tests
+
+| ID | Test | Description |
+|---|---|---|
+| MIG-TEST-01 | `<test name>` | `<e.g., verify new column type, FK constraint, index>` |
+| MIG-TEST-02 | `<test name>` | `<e.g., verify NOT NULL constraint on new column>` |
+
+### Data Integrity Tests
+
+| ID | Test | Description |
+|---|---|---|
+| MIG-TEST-03 | `<test name>` | `<e.g., row count matches between source and target>` |
+| MIG-TEST-04 | `<test name>` | `<e.g., transformed values are correct>` |
+
+### Test Files
+
+| File | What It Covers |
+|---|---|
+| `<test file path>` | `<schema or data checks>` |
+
+---
+
 ## Validation Checklist
+- [ ] Schema tests written and FAILING (Red)
+- [ ] Migration executed, schema tests PASSING (Green)
+- [ ] Data integrity tests PASSING
 - [ ] Schema matches spec
 - [ ] Foreign keys intact
 - [ ] Indexes created

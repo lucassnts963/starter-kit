@@ -66,6 +66,46 @@
 
 ---
 
+## Testing
+
+### Framework
+- {TEST_FRAMEWORK: Vitest, Jest, Mocha, Pytest, Cargo test}
+- {COMPONENT_TEST_LIB: React Testing Library, Vue Test Utils, etc.}
+- {E2E_FRAMEWORK: Playwright, Cypress}
+
+### Test File Convention
+- **Location:** co-located (`Component.test.tsx`) or `__tests__/` directory
+- **Naming:** `<FileUnderTest>.test.{ts|tsx|rs|py}` or `<FileUnderTest>.spec.{ts|tsx|rs|py}`
+- **Pattern:** one test file per source file
+
+### Coverage
+- **Threshold:** {COVERAGE_THRESHOLD}% (minimum)
+- **Measured by:** {COVERAGE_TOOL: istanbul, c8, tarpaulin, coverage.py}
+- Coverage reports generated on: `{TEST_COMMAND} --coverage`
+
+### Test Types
+| Type | Scope | Framework | Location |
+|---|---|---|---|
+| **Unit** | Single function/component | {UNIT_FRAMEWORK} | Co-located |
+| **Integration** | Module/API interaction | {INTEGRATION_FRAMEWORK} | `tests/integration/` |
+| **E2E** | Full user flows | {E2E_FRAMEWORK} | `tests/e2e/` |
+
+### TDD Workflow (Mandatory)
+1. **Read spec** → understand requirements and `## Tests` section
+2. **Red** → write a failing test that validates the requirement
+3. **Green** → write minimum code to make the test pass
+4. **Refactor** → clean up code, ensure all tests still pass
+5. **Repeat** → next test case until all spec requirements are covered
+
+### Test Standards
+- Tests must be **deterministic** (no flaky tests)
+- Tests must be **independent** (no shared mutable state)
+- Tests must have **descriptive names** following the pattern: `should <expected behavior> when <condition>`
+- Mock external dependencies; never mock the unit under test
+- Each bugfix MUST include a regression test
+
+---
+
 ## Spec Files
 
 - All spec documents in `.specs/`

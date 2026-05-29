@@ -106,7 +106,70 @@ A ready-to-use template is provided in `starter-kit/`. Clone or copy it to boots
 
 ---
 
-## 3. Spec Templates
+## 3. TDD Integration (Test-Driven Development)
+
+This methodology combines spec-driven development with TDD. Tests are written **before** implementation code — always.
+
+### Combined Workflow
+
+```
+1. IDENTIFY NEED
+   A feature, bugfix, or migration is needed.
+
+2. CREATE SPEC FOLDER
+   .specs/changes/<sequential-number>-<kebab-slug>/
+
+3. WRITE SPEC
+   Use the appropriate template from .specs/templates/.
+   Must include the `## Tests` section with test case definitions.
+
+4. RED (Write Failing Tests)
+   Write tests that correspond to the spec's test cases.
+   All tests must FAIL at this stage — proving they catch missing functionality.
+
+5. GREEN (Implement)
+   Write minimum code to make all tests pass.
+   All tests must PASS — proving the implementation meets the spec.
+
+6. REFACTOR
+   Clean up code without changing behavior.
+   All tests must still PASS — proving no regressions.
+
+7. REVIEW & APPROVE
+   Stakeholders review the passing code. Status: draft → review → approved.
+
+8. VALIDATE
+   All checklist items checked? Build passes? All tests pass? Coverage threshold met?
+
+9. ARCHIVE
+   Move the spec folder from changes/ to archive/.
+
+10. UPDATE MEMORY
+    If new architectural decisions were made, add them to memory/architecture.md.
+```
+
+### TDD Rules
+
+| Rule | Description |
+|---|---|
+| **Test First** | Never write implementation before tests. No exceptions. |
+| **Red → Green → Refactor** | Each requirement follows this cycle independently |
+| **Regression Tests for Bugs** | Every bugfix starts with a test that reproduces the bug |
+| **Coverage Threshold** | Code coverage must meet or exceed `{COVERAGE_THRESHOLD}%` |
+| **Tests Are Spec Artifacts** | Test cases are documented in the spec before implementation |
+
+### TDD Spec Templates
+
+| Template | Test Section | When Tests Are Written |
+|---|---|---|
+| `feature-spec.md` | `## Tests` | After spec approval, before implementation |
+| `bugfix-spec.md` | `## Regression Test` | First thing — must reproduce the bug (Red) |
+| `migration-spec.md` | `## Tests` | Schema + data integrity tests before migration |
+| `test-spec.md` | Full spec for test coverage | When adding tests to existing code |
+
+---
+
+## 4. Spec Templates
 
 ### Feature Spec (`feature-spec.md`)
 
@@ -143,7 +206,7 @@ Key sections:
 
 ---
 
-## 4. Memory Documents
+## 5. Memory Documents
 
 ### `architecture.md` — Architecture Decision Records (ADRs)
 
@@ -182,7 +245,7 @@ Map between different terminologies:
 
 ---
 
-## 5. `shared/` — Reference Documents
+## 6. `shared/` — Reference Documents
 
 ### `schema-current.md`
 
@@ -208,7 +271,7 @@ Column-level mapping from current → target:
 
 ---
 
-## 6. `AGENTS.md` — The Agent Instruction File
+## 7. `AGENTS.md` — The Agent Instruction File
 
 This is the single most important file for AI-assisted development. It should contain:
 
@@ -227,7 +290,7 @@ The AGENTS.md is **living documentation** — update it when conventions change,
 
 ---
 
-## 7. Custom Skills (`skills/`)
+## 8. Custom Skills (`skills/`)
 
 Skills are Markdown files that teach AI agents how to perform specific project tasks.
 
@@ -267,7 +330,7 @@ Always the first skill in any project. It teaches agents how to create new skill
 
 ---
 
-## 8. Bootstrap Checklist
+## 9. Bootstrap Checklist
 
 When starting a new project with this methodology:
 
@@ -281,7 +344,7 @@ When starting a new project with this methodology:
 
 ---
 
-## 9. Real-World Example: Horizon Project
+## 10. Real-World Example: Horizon Project
 
 The **Horizon** project (Tauri v2 + React 19 + Rust/Diesel/SQLite) adopted this methodology with these results:
 
@@ -306,7 +369,7 @@ Every spec follows: **draft → approved → implemented → archived**. The `me
 
 ---
 
-## 10. Why This Works
+## 11. Why This Works
 
 - **No ambiguity**: specs define exactly what to build before coding starts
 - **Traceability**: every change has a spec with context, decisions, and validation

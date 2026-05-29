@@ -149,6 +149,34 @@ backend/                      # Backend
 
 ---
 
+## Testing (TDD Mandatory)
+
+> **IMPORTANT:** Tests are written BEFORE implementation. Never write code first.
+
+### Framework
+- **Unit/Integration:** {TEST_FRAMEWORK}
+- **Component:** {COMPONENT_TEST_LIB}
+- **E2E:** {E2E_FRAMEWORK}
+- **Coverage:** {COVERAGE_TOOL} (threshold: {COVERAGE_THRESHOLD}%)
+
+### Test File Convention
+- Location: {co-located (`*.test.tsx`) | `__tests__/` directory}
+- Naming: `<FileUnderTest>.test.{ts|tsx|rs|py}`
+
+### TDD Workflow
+```
+Spec → Red (write failing test) → Green (implement) → Refactor → Repeat
+```
+
+### Test Command
+| Command | Where | Description |
+|---|---|---|
+| `{TEST_COMMAND}` | root | Run all tests |
+| `{TEST_WATCH_COMMAND}` | root | Run tests in watch mode |
+| `{TEST_COVERAGE_COMMAND}` | root | Run tests with coverage report |
+
+---
+
 ## Database
 
 ### Tables
@@ -177,3 +205,5 @@ backend/                      # Backend
 2. **Pattern for new search fields**: follow existing implementations
 3. **When adding a new endpoint**: define model → repository → handler → register → add TypeScript interface
 4. **All changes must go through `.specs/`** — write spec first, implement second
+5. **TDD is mandatory** — write tests BEFORE implementation, follow Red → Green → Refactor
+6. **Every bugfix requires a regression test** that reproduces the bug and passes after the fix

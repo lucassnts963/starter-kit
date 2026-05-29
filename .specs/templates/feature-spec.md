@@ -71,8 +71,31 @@ What is explicitly NOT included — avoid scope creep.
 
 - <dependency on another spec or system>
 
+## Tests
+
+> **TDD:** Write these tests BEFORE implementation. Tests must fail (Red) before code exists.
+
+### Test Cases
+
+| ID | Test | Type | Description |
+|---|---|---|---|
+| TEST-01 | `<test name>` | unit / integration / e2e | `<what it validates>` |
+| TEST-02 | `<test name>` | unit / integration / e2e | `<what it validates>` |
+
+### Test Files
+
+| File | What It Covers |
+|---|---|
+| `<test file path>` | `<components or logic tested>` |
+
+---
+
 ## Validation Checklist
 
+- [ ] Tests written BEFORE implementation (Red phase)
+- [ ] All tests passing (Green phase)
+- [ ] Code refactored without breaking tests (Refactor phase)
+- [ ] Coverage meets threshold ({COVERAGE_THRESHOLD}%)
 - [ ] Requirements met
 - [ ] States handled (loading, empty, error, success)
 - [ ] Edge cases tested
