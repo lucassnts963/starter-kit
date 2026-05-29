@@ -3,53 +3,51 @@
 ## Frontend
 
 ### Styling
-- {STYLING_APPROACH: inline CSS, CSS modules, Tailwind, styled-components}
+- {STYLING_APPROACH: CSS, SCSS, Tailwind, CSS-in-JS, SwiftUI, Qt/QML, System-native}
 - Pattern: {HOW_STYLES_ARE_DEFINED}
 
 ### Components
 - {UI_LIBRARY_OR_NATIVE}
-- Functional components with hooks
+- {COMPONENT_PATTERN: functional with hooks, class-based, composition API}
 - One component per file (default export)
-- Files named PascalCase
+- Files named {PascalCase | kebab-case | snake_case}
 
 ### State Management
-- {STATE_APPROACH: React Context, Redux, Zustand, MobX}
-- Local `useState` for component-level state
+- {STATE_APPROACH: React Context, Redux, Zustand, Vuex, Pinia, Svelte stores, Solid signals, MobX}
+- Local state via {STATE_HOOK: useState, ref, createSignal, $state}
 
 ### Forms
 - {FORM_PATTERN: modal overlay, inline form, drawer}
 
 ### Filtering / Search
-- Use `useMemo` with the input state for client-side filtering
+- Use {MEMO_HOOK: useMemo, computed, createMemo, $derived} for client-side filtering
 - Pattern:
-  ```tsx
-  const [search, setSearch] = useState("");
-  const filtered = useMemo(() => {
-    if (!search.trim()) return items;
-    const term = search.toLowerCase();
-    return items.filter(item => 
-      item.field.toLowerCase().includes(term)
-    );
-  }, [items, search]);
+  ```pseudocode
+  search = state("")
+  filtered = computed(() => {
+    if empty(search) return items
+    term = lowercase(search)
+    return items.filter(item => contains(lowercase(item.field), term))
+  })
   ```
 
 ### Data Fetching
-- {API_CALL_METHOD: invoke, fetch, axios}
+- {API_CALL_METHOD: fetch, axios, tRPC, GraphQL, gRPC, native bridge}
 - Always handle loading, error, and empty states
 
-### TypeScript
-- All interfaces in `src/types/index.ts` (or co-located)
-- Naming follows {NAMING_CONVENTION: snake_case from backend, camelCase, PascalCase}
-- IDs: {UUID_v4_string | number | autoincrement}
+### Types / Interfaces
+- All type definitions in `types/` (or co-located)
+- Naming follows {NAMING_CONVENTION: snake_case, camelCase, PascalCase}
+- IDs: {UUID_v4 | number | autoincrement | ULID}
 
 ---
 
 ## Backend
 
 ### Architecture
-- **Repository pattern**: each entity has a module in `db/repository/`
-- **Command handlers**: thin wrappers calling repository functions
-- Entry point registers all handlers
+- **Repository pattern**: each entity has a module in `{DB_LAYER}/repository/`
+- **{HANDLER_PATTERN}**: thin wrappers calling repository functions
+- Entry point registers all {HANDLERS: commands, routes, controllers}
 
 ### Models
 - {MODEL_PATTERN}
@@ -60,28 +58,28 @@
 - IDs: {TYPE}
 
 ### Database
-- {DB_ENGINE: SQLite, PostgreSQL, MySQL}
-- Migrations via {DIESEL | PRISMA | KNEX | ALEMBIC}
-- Connection pooling via {R2D2 | PG_POOL | built-in}
+- {DB_ENGINE: SQLite, PostgreSQL, MySQL, MongoDB, SurrealDB, DynamoDB}
+- Migrations via {DIESEL | PRISMA | KNEX | ALEMBIC | GOLANG_MIGRATE | FLYWAY | EF_CORE | ECTO}
+- Connection pooling via {R2D2 | PG_POOL | BUILT_IN}
 
 ---
 
 ## Testing
 
 ### Framework
-- {TEST_FRAMEWORK: Vitest, Jest, Mocha, Pytest, Cargo test}
-- {COMPONENT_TEST_LIB: React Testing Library, Vue Test Utils, etc.}
-- {E2E_FRAMEWORK: Playwright, Cypress}
+- {TEST_FRAMEWORK: Vitest, Jest, Mocha, Pytest, Cargo test, Go test, JUnit, xUnit, ExUnit}
+- {COMPONENT_TEST_LIB: React Testing Library, Vue Test Utils, Svelte Testing Library, Angular TestBed, NONE}
+- {E2E_FRAMEWORK: Playwright, Cypress, Appium, XCTest, Espresso, NONE}
 
 ### Test File Convention
-- **Location:** co-located (`Component.test.tsx`) or `__tests__/` directory
-- **Naming:** `<FileUnderTest>.test.{ts|tsx|rs|py}` or `<FileUnderTest>.spec.{ts|tsx|rs|py}`
+- **Location:** {co-located (`File.test.{EXT}`) | `__tests__/` directory}
+- **Naming:** `<FileUnderTest>.test.{EXT}` or `<FileUnderTest>.spec.{EXT}`
 - **Pattern:** one test file per source file
 
 ### Coverage
 - **Threshold:** {COVERAGE_THRESHOLD}% (minimum)
-- **Measured by:** {COVERAGE_TOOL: istanbul, c8, tarpaulin, coverage.py}
-- Coverage reports generated on: `{TEST_COMMAND} --coverage`
+- **Measured by:** {COVERAGE_TOOL: istanbul, c8, tarpaulin, coverage.py, gcov, JaCoCo, Coverlet}
+- Coverage reports generated on: `{TEST_COMMAND} {COVERAGE_FLAG}`
 
 ### Test Types
 | Type | Scope | Framework | Location |

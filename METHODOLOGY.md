@@ -238,7 +238,7 @@ Document your project's coding standards:
 ### `glossary.md` — Terminology & Entity Map
 
 Map between different terminologies:
-- Domain terms across languages (Portuguese ↔ English)
+- Domain terms across languages ({LANG_A} ↔ {LANG_B})
 - Column name translations
 - Status value mappings
 - Legacy ↔ modern table names
@@ -326,7 +326,7 @@ Always the first skill in any project. It teaches agents how to create new skill
 - Repetitive tasks (e.g., "create a CRUD endpoint", "add a search field")
 - Domain-specific patterns (e.g., "add a new report", "create a dashboard tile")
 - Compliance checks (e.g., "review for security", "validate conventions")
-- Code generation (e.g., "generate Rust model from SQL", "create React form from interface")
+- Code generation (e.g., "generate data model from SQL", "create UI form from type definition")
 
 ---
 
@@ -344,25 +344,22 @@ When starting a new project with this methodology:
 
 ---
 
-## 10. Real-World Example: Horizon Project
+## 10. Real-World Template
 
-The **Horizon** project (Tauri v2 + React 19 + Rust/Diesel/SQLite) adopted this methodology with these results:
+> **FILL THIS IN** when your project has accumulated enough specs and ADRs. Replace the examples below with your own.
+
+The **{PROJECT_NAME}** project ({FULL_TECH_STACK}) adopted this methodology with these results:
 
 ### Specs Created
 | ID | Title | Outcome |
 |---|---|---|
-| 001 | Search fields in all lists | 5 TSX files modified, search in every list page |
-| 002 | Fix Unicode encoding | ~20 files, ~133 escapes replaced with real UTF-8 |
-| 003 | Migration foundation | PostgreSQL + r2d2 + sync engine + 2 Diesel migrations |
-| 004 | Fix compiler warnings | 18 warnings resolved, 0 remaining |
+| 001 | {FIRST_SPEC_TITLE} | {SUMMARY_OF_CHANGES} |
+| 002 | {SECOND_SPEC_TITLE} | {SUMMARY_OF_CHANGES} |
 
 ### ADRs Written
-- ADR-001: Offline-First with SQLite + PostgreSQL Sync
-- ADR-002: Dual Paradigm (workforce-centric + project-centric)
-- ADR-003: English naming for PostgreSQL, Portuguese for SQLite
-- ADR-004: Spec-Driven Development
-- ADR-005: Areas ≠ Cost Centers (independent dimensions)
-- ADR-006: Attendance + Rateio de Horas (two-step flow)
+- ADR-001: {FIRST_ADR_TITLE}
+- ADR-002: {SECOND_ADR_TITLE}
+- ...
 
 ### Key Pattern
 Every spec follows: **draft → approved → implemented → archived**. The `memory/` folder grows with each ADR, building institutional knowledge that outlives any single developer.

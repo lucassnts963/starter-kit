@@ -33,15 +33,16 @@ What is explicitly NOT included — avoid scope creep.
 
 ### Technical
 
-| Area | File / Component | Change Description |
+| Layer | File / Component | Change Description |
 |---|---|---|
-| Frontend | `<file path>` | <what changes> |
-| Backend | `<file path>` | <what changes> |
-| Database | `<migration file>` | <schema change> |
+| {LAYER} | `<file path>` | <what changes> |
+| {LAYER} | `<file path>` | <what changes> |
 
 ## Design
 
-### States (Frontend)
+### States (UI)
+
+> Applicable for visual interfaces. Skip for API/headless features.
 
 | State | Behavior |
 |---|---|

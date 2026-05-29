@@ -2,7 +2,7 @@
 
 Map between domain terminology, column names, and different systems.
 
-| Term (Language A) | Term (Language B) | Table / Context | Notes |
+| Term ({LANG_A}) | Term ({LANG_B}) | Table / Context | Notes |
 |---|---|---|---|
 | {TERM_A} | {TERM_B} | {table_name} | {description} |
 

@@ -6,10 +6,10 @@
 
 | Layer | Tech |
 |---|---|
-| Desktop Shell | {TAURI_V2 or ELECTRON or WEB} |
-| Frontend | {REACT_19 or VUE or OTHER} |
-| Backend | {RUST_DIESEL or NODE or OTHER} |
-| Database | {SQLITE or POSTGRES or OTHER} |
+| Shell / Platform | {TAURI or ELECTRON or WAILLS or WEB or CLI or MOBILE or LIBRARY} |
+| Frontend | {REACT or VUE or SVELTE or ANGULAR or SOLID or HTMX or VANILLA or NONE} |
+| Backend | {RUST or NODE or PYTHON or GO or CSHARP or JAVA or ELIXIR or NONE} |
+| Database | {SQLITE or POSTGRES or MYSQL or MONGODB or SURREALDB or NONE} |
 | Auth | {LOGIN_METHOD} |
 | Language | {LANGUAGE} |
 
@@ -65,31 +65,31 @@ This project uses **spec-driven development**. All changes flow through specs in
 ## Project Structure
 
 ```
-src/                          # Frontend
-├── App.tsx                   # Route mapping / entry
-├── main.tsx                  # Entry point
-├── types/index.ts            # All TypeScript interfaces
-├── styles.css                # Global styles
+src/                          # Application source
+├── {ENTRY_POINT}             # Route mapping / entry
+├── {ENTRY_POINT}             # Bootstrapping
+├── types/                    # Type definitions
+├── {STYLE_FILE}              # Global styles
 ├── stores/                   # State management
 ├── components/               # Reusable components
 │   └── layout/               # Layout components
-└── routes/                   # Page components
+└── routes/                   # Page / route components
     └── <Module>/
-        ├── <Module>List.tsx
-        └── <Module>Form.tsx
+        ├── <Module>List.{EXT}
+        └── <Module>Form.{EXT}
 
-backend/                      # Backend
-├── Cargo.toml / package.json
+backend/                      # Backend (if applicable)
+├── {MANIFEST_FILE}
 ├── .env
 ├── migrations/               # Database migrations
 ├── src/
-│   ├── main.rs / index.ts
+│   ├── {ENTRY_POINT}
 │   ├── models/               # Data models
 │   ├── db/                   # Database layer
-│   │   ├── mod.rs
-│   │   ├── schema.rs
+│   │   ├── {DB_MODULE}
+│   │   ├── {SCHEMA_FILE}
 │   │   └── repository/       # CRUD per entity
-│   ├── commands/             # API handlers / controllers
+│   ├── {HANDLERS}/           # API handlers / controllers
 │   └── business/             # Business logic
 ```
 
@@ -131,19 +131,19 @@ backend/                      # Backend
 - {UI_LIBRARY}
 - **State management**: {STATE_MANAGEMENT}
 - **Forms**: {FORM_PATTERN}
-- **Client-side filtering**: Always use `useMemo` with the input state:
-  ```tsx
-  const [search, setSearch] = useState("");
-  const filtered = useMemo(() => {
-    if (!search.trim()) return items;
-    const term = search.toLowerCase();
-    return items.filter(item => item.field.toLowerCase().includes(term));
-  }, [items, search]);
+- **Client-side filtering**: Use a memoized/computed filter from the input state:
+  ```pseudocode
+  search = state("")
+  filtered = computed(() => {
+    if empty(search) return items
+    term = lowercase(search)
+    return items.filter(item => contains(lowercase(item.field), term))
+  })
   ```
 
 ### Backend
 - **Repository pattern**: Each entity has its own repository module
-- **Command handlers**: Thin wrappers that call repository functions
+- **{HANDLER_PATTERN}**: Thin wrappers that call repository functions
 - **Naming**: {NAMING_CONVENTION}
 - **IDs**: {ID_STRATEGY}
 
@@ -160,8 +160,8 @@ backend/                      # Backend
 - **Coverage:** {COVERAGE_TOOL} (threshold: {COVERAGE_THRESHOLD}%)
 
 ### Test File Convention
-- Location: {co-located (`*.test.tsx`) | `__tests__/` directory}
-- Naming: `<FileUnderTest>.test.{ts|tsx|rs|py}`
+- Location: {co-located (`{File}.test.{EXT}`) | `__tests__/` directory}
+- Naming: `<FileUnderTest>.test.{EXT}`
 
 ### TDD Workflow
 ```
@@ -203,7 +203,7 @@ Spec → Red (write failing test) → Green (implement) → Refactor → Repeat
 
 1. **{OBSERVATION_1}**
 2. **Pattern for new search fields**: follow existing implementations
-3. **When adding a new endpoint**: define model → repository → handler → register → add TypeScript interface
+3. **When adding a new endpoint**: define model → repository → handler → register → add type definition
 4. **All changes must go through `.specs/`** — write spec first, implement second
 5. **TDD is mandatory** — write tests BEFORE implementation, follow Red → Green → Refactor
 6. **Every bugfix requires a regression test** that reproduces the bug and passes after the fix

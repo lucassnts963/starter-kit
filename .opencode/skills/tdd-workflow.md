@@ -121,10 +121,10 @@ After completing the cycle, report:
 
 **Agent should:**
 1. Read `spec.md` → find 5 test cases in `## Tests`
-2. Create `SearchBar.test.tsx` with 3 unit tests
-3. Create `api.test.ts` with 2 integration tests
+2. Create `{Component}.test.{EXT}` with 3 unit tests
+3. Create `{module}.test.{EXT}` with 2 integration tests
 4. Run tests → all 5 fail (Red)
-5. Implement `SearchBar.tsx` and `api.ts`
+5. Implement `{Component}.{EXT}` and `{module}.{EXT}`
 6. Run tests → all 5 pass (Green)
 7. Refactor → extract helper function
 8. Run full suite → coverage 85% meets 80% threshold
