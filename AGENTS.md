@@ -28,7 +28,11 @@ This project uses **spec-driven development**. All changes flow through specs in
     └── ...
 
 .specs/
+├── requirements/              # Requirements documents (elicitation & analysis)
+│   └── <nnn>-<slug>/
+│       └── requirements.md
 ├── templates/                 # Spec templates (reusable)
+│   ├── requirements-spec.md   # For requirements gathering
 │   ├── feature-spec.md        # For new features
 │   ├── migration-spec.md      # For schema/database changes
 │   └── bugfix-spec.md         # For bug corrections

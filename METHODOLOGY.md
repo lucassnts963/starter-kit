@@ -24,6 +24,10 @@ project/
 │       └── create-skill.md      # How to create new skills (always first)
 │
 ├── .specs/
+│   ├── requirements/            # Requirements documents (elicitation & analysis)
+│   │   └── <nnn>-<slug>/
+│   │       └── requirements.md
+│   │
 │   ├── templates/               # Reusable spec templates
 │   │   ├── feature-spec.md      # For new features
 │   │   ├── migration-spec.md    # For schema/database changes
@@ -54,11 +58,96 @@ A ready-to-use template is provided in `starter-kit/`. Clone or copy it to boots
 
 ---
 
-## 2. The Spec Workflow
+## 2. Requirements Engineering
+
+Before writing a spec, requirements must be elicited, analyzed, and documented. This phase lives in `.specs/requirements/`.
+
+### Full Lifecycle
+
+```
+IDEA (raw problem or opportunity)
+  → ELICITATION (gather requirements from stakeholders)
+    → ANALYSIS (prioritize, resolve conflicts, identify dependencies)
+      → REQUIREMENTS DOC (requirements-spec.md in requirements/<nnn>-<slug>/)
+        → SPECIFICATION (spec.md in changes/<nnn>-<slug>/)
+          → IMPLEMENTATION (TDD: Red → Green → Refactor)
+            → VALIDATION (tests pass, stakeholder sign-off)
+              → ARCHIVE
+```
+
+### Directory Flow
+
+```
+.specs/requirements/<nnn>-<slug>/requirements.md   (Phase: Elicitation & Analysis)
+    →  .specs/changes/<nnn>-<slug>/spec.md          (Phase: Specification & Implementation)
+        →  .specs/archive/<nnn>-<slug>/             (Phase: Completed)
+```
+
+The same `<nnn>` number is used across directories for full traceability: from requirements → spec → archive.
+
+### Elicitation Methodologies
+
+The engineer chooses the best fit for each requirement. Supported approaches:
+
+| Methodology | Format | When to Use |
+|---|---|---|
+| **User Stories** | `As a <role>, I want <action>, so that <benefit>` | End-user facing features |
+| **Use Cases** | Actor, Pre/Post conditions, Main Flow, Alternatives, Exceptions | Complex multi-actor interactions |
+| **Job Stories** | `When <situation>, I want <motivation>, so that <outcome>` | Situational or task-driven needs |
+| **BDD / Gherkin** | `Given <context>, When <action>, Then <result>` | Behavior-driven, testable at acceptance level |
+| **Hybrid** | Mix & match any combination | Complex domains with varied needs |
+
+### Requirements Document Structure
+
+The `requirements-spec.md` template includes:
+
+| Section | Purpose |
+|---|---|
+| **Problem Statement** | Current situation, cost of inaction, success metrics |
+| **Stakeholder Map** | Who is impacted, power vs. interest |
+| **Methodology** | Which approach(es) were chosen |
+| **Requirements** | User stories, use cases, job stories, or BDD scenarios |
+| **Functional Requirements** | Formal REQ-XX with sources and priority |
+| **Non-Functional Requirements** | Performance, security, accessibility, compliance |
+| **Constraints & Assumptions** | Limits and premises |
+| **MoSCoW** | Must / Should / Could / Won't have |
+| **Dependencies** | External systems, teams, blocking specs |
+| **Domain Glossary** | Terms and definitions |
+| **Risks & Mitigations** | What can go wrong and how to prevent |
+| **Traceability Matrix** | REQ → Story → Spec → Test |
+| **Appendix** | Research, interview notes, open questions |
+
+### Requirements → Spec Transition
+
+When requirements are approved:
+1. The requirement document stays in `requirements/<nnn>-<slug>/`
+2. A new spec is created in `changes/<nnn>-<slug>/` using the **same number**
+3. The spec's `## Requirements Traceability` section links back to the requirements document
+4. Stories/use cases from requirements are broken into technical tasks in the spec
+
+### Skill
+
+Use the `requirements-gathering` skill (`"levantar requisitos"`, `"requirements"`) to guide the elicitation process interactively.
+
+### When to Skip
+
+Not every change needs formal requirements. Skip this phase when:
+- The change is purely technical (refactoring, dependency update)
+- The change is a bugfix with clear reproduction steps (use `bugfix-spec.md` directly)
+- The change is a database migration with clear schema mapping (use `migration-spec.md` directly)
+
+---
+
+## 3. The Spec Workflow
 
 ### Step-by-Step
 
 ```
+0. ELICIT REQUIREMENTS (if applicable)
+   Use requirements-spec.md in .specs/requirements/<nnn>-<slug>/
+   Choose methodology: User Stories, Use Cases, Job Stories, or BDD
+   See Section 2 for full details.
+
 1. IDENTIFY NEED
    A feature, bugfix, or migration is needed.
    
@@ -106,7 +195,7 @@ A ready-to-use template is provided in `starter-kit/`. Clone or copy it to boots
 
 ---
 
-## 3. TDD Integration (Test-Driven Development)
+## 4. TDD Integration (Test-Driven Development)
 
 This methodology combines spec-driven development with TDD. Tests are written **before** implementation code — always.
 
@@ -169,7 +258,7 @@ This methodology combines spec-driven development with TDD. Tests are written **
 
 ---
 
-## 4. Spec Templates
+## 5. Spec Templates
 
 ### Feature Spec (`feature-spec.md`)
 
@@ -206,7 +295,7 @@ Key sections:
 
 ---
 
-## 5. Memory Documents
+## 6. Memory Documents
 
 ### `architecture.md` — Architecture Decision Records (ADRs)
 
@@ -245,7 +334,7 @@ Map between different terminologies:
 
 ---
 
-## 6. `shared/` — Reference Documents
+## 7. `shared/` — Reference Documents
 
 ### `schema-current.md`
 
@@ -271,7 +360,7 @@ Column-level mapping from current → target:
 
 ---
 
-## 7. `AGENTS.md` — The Agent Instruction File
+## 8. `AGENTS.md` — The Agent Instruction File
 
 This is the single most important file for AI-assisted development. It should contain:
 
@@ -290,7 +379,7 @@ The AGENTS.md is **living documentation** — update it when conventions change,
 
 ---
 
-## 8. Custom Skills (`skills/`)
+## 9. Custom Skills (`skills/`)
 
 Skills are Markdown files that teach AI agents how to perform specific project tasks.
 
@@ -330,21 +419,22 @@ Always the first skill in any project. It teaches agents how to create new skill
 
 ---
 
-## 9. Bootstrap Checklist
+## 10. Bootstrap Checklist
 
 When starting a new project with this methodology:
 
 1. [ ] Copy everything from this starter-kit to your new project root
-2. [ ] Fill in `AGENTS.md` with project specifics (replace `{PLACEHOLDERS}`)
-3. [ ] Fill in `.specs/memory/conventions.md` with your coding standards
-4. [ ] Fill in `.specs/shared/schema-current.md` with your DB schema
-5. [ ] Create your first skill in `.opencode/skills/` (use `create-skill`)
-6. [ ] Write your first ADR in `.specs/memory/architecture.md`
-7. [ ] Begin spec-driven: create `.specs/changes/001-init/` for initial setup
+2. [ ] Run the `init-project` skill (`"start project"`) to fill in project decisions
+3. [ ] Fill in `AGENTS.md` with project specifics (replace `{PLACEHOLDERS}`)
+4. [ ] Fill in `.specs/memory/conventions.md` with your coding standards
+5. [ ] Fill in `.specs/shared/schema-current.md` with your DB schema
+6. [ ] Create your first skill in `.opencode/skills/` (use `create-skill`)
+7. [ ] Write your first ADR in `.specs/memory/architecture.md`
+8. [ ] Begin spec-driven: create `.specs/requirements/001-init/` for your first requirements
 
 ---
 
-## 10. Real-World Template
+## 11. Real-World Template
 
 > **FILL THIS IN** when your project has accumulated enough specs and ADRs. Replace the examples below with your own.
 
@@ -366,7 +456,7 @@ Every spec follows: **draft → approved → implemented → archived**. The `me
 
 ---
 
-## 11. Why This Works
+## 12. Why This Works
 
 - **No ambiguity**: specs define exactly what to build before coding starts
 - **Traceability**: every change has a spec with context, decisions, and validation

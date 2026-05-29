@@ -96,7 +96,13 @@ Create or update `.specs/memory/architecture.md` to add:
 - All ADRs and specs must align with these choices
 ```
 
-### Step 5: Create First Spec
+### Step 5: Create Bootstrap Spec and Requirements
+
+Create `.specs/requirements/001-init/requirements.md` with:
+- Problem: new project initialization
+- Methodology: User Stories (for the setup itself)
+- Stakeholder: development team
+- Functional Requirements: project structure, conventions, ADR-001
 
 Create `.specs/changes/001-init/spec.md` using the `feature-spec.md` template with:
 
@@ -107,6 +113,7 @@ Create `.specs/changes/001-init/spec.md` using the `feature-spec.md` template wi
 - **Requirements:** REQ-01: Project structure created with chosen tech stack
 - **Design:** N/A (no UI)
 - **Tests:** N/A (setup-only change)
+- **Requirements Traceability:** Linked to requirements/001-init/
 - **Validation Checklist:** AGENTS.md filled, conventions set, ADR-001 written
 
 ### Step 6: Report Summary
@@ -130,13 +137,15 @@ Display a summary table of all decisions made and what files were created/modifi
 - AGENTS.md — updated
 - conventions.md — updated
 - architecture.md — ADR-001 added
+- .specs/requirements/001-init/requirements.md — created
 - .specs/changes/001-init/spec.md — created
 
 ### Next Steps
 1. Fill remaining {PLACEHOLDERS} in AGENTS.md
 2. Create the project structure (run the init command for your framework)
-3. Review and approve spec 001-init
-4. Start your first feature: create .specs/changes/002-<slug>/
+3. Review and approve requirements REQ-001
+4. Review and approve spec CHG-001
+5. Start your first feature: run the requirements-gathering skill for `.specs/requirements/002-<slug>/`
 ```
 
 ## Examples
@@ -158,7 +167,7 @@ Display a summary table of all decisions made and what files were created/modifi
 10. Fill AGENTS.md with: React, Node, PostgreSQL, Vitest
 11. Narrow conventions.md to React+Node+PostgreSQL options
 12. Create ADR-001 with the full stack
-13. Create .specs/changes/001-init/spec.md
+13. Create requirements/001-init/requirements.md and changes/001-init/spec.md
 14. Report summary
 
 ### Example 2: CLI + Python
@@ -177,8 +186,8 @@ Display a summary table of all decisions made and what files were created/modifi
 9. Ask package manager → "pip"
 10. Fill AGENTS.md with: CLI, Python, SQLite, Pytest
 11. Remove frontend sections from conventions.md (no UI)
-12. Create ADR-001
-13. Create 001-init spec
+12. Create ADR-001 with the full stack
+13. Create requirements/001-init/requirements.md and changes/001-init/spec.md
 14. Report summary
 
 ## References

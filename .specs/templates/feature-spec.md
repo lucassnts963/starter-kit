@@ -72,6 +72,15 @@ What is explicitly NOT included — avoid scope creep.
 
 - <dependency on another spec or system>
 
+## Requirements Traceability
+
+> Links this implementation spec back to the requirements document.
+
+| REQ ID | Source (requirements/) | Requirement Summary | Priority | Acceptance Criteria |
+|---|---|---|---|---|
+| REQ-01 | requirements/<nnn>-<slug>/ | <summary> | Must | <criterion> |
+| REQ-02 | requirements/<nnn>-<slug>/ | <summary> | Should | <criterion> |
+
 ## Tests
 
 > **TDD:** Write these tests BEFORE implementation. Tests must fail (Red) before code exists.
