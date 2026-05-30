@@ -1,5 +1,10 @@
 # Starter Kit — Spec-Driven + TDD Methodology
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Methodology](https://img.shields.io/badge/methodology-spec--driven_%2B_TDD-blue)](https://github.com/lucassnts963/starter-kit/blob/master/METHODOLOGY.md)
+[![AI Ready](https://img.shields.io/badge/AI_Agent-ready-green)](https://github.com/lucassnts963/starter-kit/blob/master/AGENTS.md)
+![Status](https://img.shields.io/badge/status-stable-brightgreen)
+
 Um kit de partida para projetos de software com metodologia integrada de engenharia de requisitos, desenvolvimento orientado a especificações e TDD.
 
 ## Metodologia
