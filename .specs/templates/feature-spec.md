@@ -33,6 +33,8 @@ What is explicitly NOT included — avoid scope creep.
 
 ### Technical
 
+> Use the project's architecture layers: Repository (data), Adapter (external API), Service (business logic). See `.specs/memory/conventions.md## Backend`.
+
 | Layer | File / Component | Change Description |
 |---|---|---|
 | {LAYER} | `<file path>` | <what changes> |

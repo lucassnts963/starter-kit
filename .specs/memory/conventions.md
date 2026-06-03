@@ -45,8 +45,25 @@
 ## Backend
 
 ### Architecture
-- **Repository pattern**: each entity has a module in `{DB_LAYER}/repository/`
-- **{HANDLER_PATTERN}**: thin wrappers calling repository functions
+
+Three distinct layers with clear boundaries:
+
+| Layer | Folder | Purpose | Example |
+|---|---|---|---|
+| **Repository** | `db/repository/` | Data access (CRUD) — one per database entity | `UserRepository`, `OrderRepository` |
+| **Adapter** | `adapters/` | External service integration — one per external API/service | `StripeAdapter`, `S3Adapter`, `SendGridAdapter` |
+| **Service** | `business/` or `services/` | Business logic orchestration — coordinates repositories and adapters | `PaymentService`, `CheckoutService` |
+
+**Data flow:**
+```
+Handler → Service → Repository (local data)
+                 → Adapter  (external service)
+```
+
+- **Repository**: Abstrai coleção de dados. Métodos: `findById()`, `save()`, `delete()`. Retorna objetos de domínio.
+- **Adapter**: Traduz entre o sistema e uma API externa. Métodos semânticos: `charge()`, `upload()`, `send()`. Retorna DTOs ou status codes.
+- **Service**: Orquestra lógica de negócio. Chama repositories e adapters — nunca diretamente do handler.
+- **{HANDLER_PATTERN}**: thin wrappers calling services. Zero business logic in handlers.
 - Entry point registers all {HANDLERS: commands, routes, controllers}
 
 ### Models
