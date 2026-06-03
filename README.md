@@ -57,9 +57,20 @@ Diga ao seu agente de IA: `"start project"` ou `"iniciar projeto"`
 
 A skill `init-project` fará 9 perguntas sobre sua stack (shell, frontend, backend, banco, testes, cobertura, linguagem, package manager) e preencherá os templates automaticamente.
 
+### Projeto já existente? Adote a metodologia
+
+Se você **já tem um projeto** com código, não use `create-project`/`init-project` (são para projeto
+novo). Dentro do repositório existente, diga: `"adotar metodologia"` ou `"adopt methodology"`.
+
+A skill `adopt-project` **detecta** sua stack (sem perguntas cegas), traz os arquivos da metodologia
+**sem sobrescrever** nada do projeto, **rascunha** os documentos de memória a partir do seu código
+real (convenções, catálogo de componentes, schema, ADR da stack) e registra um **baseline de
+cobertura forward-only** (TDD obrigatório só para mudanças novas).
+
 ### 3. Comece a desenvolver
 
-Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill `gather-requirements`.
+Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill `gather-requirements`,
+ou `"mudança rápida"` para o caminho leve.
 
 ## Estrutura de Diretórios
 
@@ -128,6 +139,7 @@ Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill 
 | `update-changelog` | `"atualizar changelog"`, `"update changelog"` | Gera changelog a partir do archive |
 | `create-project` | `"criar novo projeto"`, `"create new project"`, `"começar do zero"` | One-shot: clone + limpeza + bootstrap |
 | `init-project` | `"iniciar projeto"`, `"start project"`, `"bootstrap project"` | Bootstrap interativo (projeto já clonado) |
+| `adopt-project` | `"adotar metodologia"`, `"adopt methodology"`, `"adicionar metodologia"` | Adota a metodologia em projeto existente (sem clobber) |
 | `gather-requirements` | `"levantar requisitos"`, `"gather requirements"`, `"elicitar requisitos"` | Elicitação guiada de requisitos |
 | `run-change` | `"mudança rápida"`, `"quick change"`, `"fazer mudança"`, `"run change"` | Roteador de cerimônia: caminho leve vs completo |
 | `run-tdd` | `"executar TDD"`, `"run TDD cycle"`, `"TDD"`, `"write tests"` | Ciclo Red → Green → Refactor |
@@ -163,6 +175,8 @@ O starter-kit é agnóstico a tecnologia. Veja `.specs/config.md` para a lista c
 |---|---|
 | `"criar novo projeto"` | One-shot: criar projeto do zero (clone + bootstrap) |
 | `"iniciar projeto"` | Bootstrap interativo (projeto já clonado) |
+| `"adotar metodologia"` | Adotar a metodologia em projeto existente (detecta stack, sem clobber) |
+| `"mudança rápida"` | Roteador de cerimônia: leve vs completo |
 | `"levantar requisitos"` | Iniciar elicitação de requisitos |
 | `"executar TDD"` | Ciclo Red → Green → Refactor |
 | `"criar skill"` | Criar nova skill padronizada |

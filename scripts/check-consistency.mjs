@@ -44,6 +44,7 @@ const pass = (msg) => passes.push(msg);
  * spanning multiple indented lines are captured correctly. Returns { name, description } or null.
  */
 function parseFrontmatter(text) {
+  text = text.replace(/\r\n/g, "\n"); // tolerate CRLF (Windows autocrlf checkouts)
   if (!text.startsWith("---")) return null;
   const end = text.indexOf("\n---", 3);
   if (end === -1) return null;
