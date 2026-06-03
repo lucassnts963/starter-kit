@@ -496,6 +496,26 @@ When starting a new project with this methodology:
 7. [ ] Write your first ADR in `.specs/memory/architecture.md`
 8. [ ] Begin spec-driven: create `.specs/requirements/001-init/` for your first requirements
 
+### Adopting into an existing project
+
+The checklist above is for **greenfield** projects. To add the methodology to a repository that
+**already has code**, do not run `init-project` — run the **`adopt-project`** skill
+(`"adopt methodology"` / `"adotar metodologia"`) from inside the existing repo. It differs from
+greenfield bootstrap in three ways:
+
+- **Detect, don't ask.** It infers the stack from manifests (`package.json`, `Cargo.toml`,
+  `pyproject.toml`, `go.mod`, …) and only asks you to confirm.
+- **Overlay, don't clobber.** It copies in only files that don't already exist, and *appends* the
+  methodology sections to an existing `AGENTS.md` instead of overwriting it. Any collision is placed
+  alongside for review, never replaced.
+- **Draft memory from real code.** It auto-drafts `conventions.md`, `component-catalog.md` (your
+  existing reusable code), `architecture.md` (ADR-003 = detected stack), and `schema-current.md`,
+  each flagged `> REVIEW` until you approve.
+
+Legacy code gets a **forward-only TDD baseline**: the current coverage is recorded as a floor that CI
+must not regress, and TDD + clean-code thresholds apply to new or changed code — never as a
+retroactive gate.
+
 ---
 
 ## 11. Real-World Template
