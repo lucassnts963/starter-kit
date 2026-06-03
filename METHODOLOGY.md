@@ -19,11 +19,14 @@ Every project following this methodology has:
 
 ```
 project/
-├── .opencode/
-│   └── skills/                  # Custom agent skills
-│       └── create-skill.md      # How to create new skills (always first)
+├── .claude/
+│   └── skills/                  # Custom agent skills (opencode + Claude Code)
+│       └── <name>/SKILL.md      # One folder per skill, frontmatter + 6 sections
+│
+├── scripts/                     # check-consistency.mjs, update-changelog.mjs
 │
 ├── .specs/
+│   ├── config.md                # Single source of constants + skill format
 │   ├── requirements/            # Requirements documents (elicitation & analysis)
 │   │   └── <nnn>-<slug>/
 │   │       └── requirements.md
@@ -41,6 +44,8 @@ project/
 │   │
 │   ├── memory/                  # Persistent project knowledge
 │   │   ├── architecture.md      # Architectural decisions (ADRs)
+│   │   ├── clean-code.md        # Clean code standards (SOLID, metrics)
+│   │   ├── component-catalog.md # Reusable code inventory
 │   │   ├── conventions.md       # Code conventions
 │   │   └── glossary.md          # Terminology / entity map
 │   │
@@ -127,7 +132,7 @@ When requirements are approved:
 
 ### Skill
 
-Use the `requirements-gathering` skill (`"levantar requisitos"`, `"requirements"`) to guide the elicitation process interactively.
+Use the `gather-requirements` skill (`"levantar requisitos"`, `"gather requirements"`) to guide the elicitation process interactively.
 
 ### When to Skip
 
@@ -170,11 +175,15 @@ Not every change needs formal requirements. Skip this phase when:
    All checklist items checked? Build passes? Tests pass?
    
 7. ARCHIVE
-   Move the spec folder from changes/ to archive/.
-   
-8. UPDATE MEMORY
-   If new architectural decisions were made, add them to memory/architecture.md.
-   If conventions changed, update memory/conventions.md.
+    Move the spec folder from changes/ to archive/.
+    
+8. UPDATE CHANGELOG
+    Run the update-changelog skill to add the spec entry to CHANGELOG.md.
+    
+9. UPDATE MEMORY
+    If new architectural decisions were made, add them to memory/architecture.md.
+    If conventions changed, update memory/conventions.md.
+    If reusable code was created, update memory/component-catalog.md.
 ```
 
 ### Naming Convention
@@ -192,6 +201,19 @@ Not every change needs formal requirements. Skip this phase when:
 | `review` | Under stakeholder review |
 | `approved` | Ready for implementation |
 | `implemented` | Code is done, checks pass |
+
+### Changelog
+
+Every archived spec generates a changelog entry automatically. The changelog lives at `CHANGELOG.md` and follows the [Keep a Changelog](https://keepachangelog.com) format. No manual writing required.
+
+| Spec Prefix | Changelog Section |
+|---|---|
+| `CHG-` (new feature) | `### Added` |
+| `CHG-` (refactor/improvement) | `### Changed` |
+| `FIX-` | `### Fixed` |
+| `MIG-` | `### Changed` |
+
+**Workflow:** after moving a spec to archive, run `"atualizar changelog"` or `"update changelog"`. Validate coverage with `"verificar consistência"`.
 
 ---
 
@@ -322,7 +344,28 @@ Document your project's coding standards:
 - Form patterns
 - Data fetching pattern
 - Naming conventions
-- Repository structure
+- Backend layers: Repository (data), Adapter (external API), Service (business logic)
+- File structure
+
+### `clean-code.md` — Clean Code Standards
+
+Defines what "good code" means in this project:
+- SOLID principles applied to the project's stack
+- Metrics (function size, parameter count, complexity thresholds)
+- Forbidden patterns (anti-patterns that degrade testability)
+- Testability rules (dependency injection, mock seams, AAA pattern)
+- Refactor checklist for the TDD Green → Refactor transition
+
+Agents consult this during implementation and refactoring.
+
+### `component-catalog.md` — Reusable Code Inventory
+
+Living catalog of every reusable component, hook, utility, service, and type. Rules:
+- **Check before creating** — avoid duplicating what already exists
+- **Add after creating** — every new reusable piece gets an entry
+- **Keep current** — remove entries when code is deleted
+
+Agents must consult this before writing any new code.
 
 ### `glossary.md` — Terminology & Entity Map
 
@@ -379,32 +422,53 @@ The AGENTS.md is **living documentation** — update it when conventions change,
 
 ---
 
-## 9. Custom Skills (`skills/`)
+## 9. Custom Skills (`.claude/skills/`)
 
-Skills are Markdown files that teach AI agents how to perform specific project tasks.
+Skills teach AI agents how to perform specific project tasks. Each skill is a folder
+`.claude/skills/<name>/SKILL.md` — a location discovered automatically by **both opencode and
+Claude Code**, so a single copy serves every harness. (Flat `.md` files under `.opencode/skills/`
+are *not* discovered.)
 
 ### Anatomy of a Skill
 
-```markdown
-# <Skill Title>
+A `SKILL.md` is YAML frontmatter + the 6 canonical body sections. The `description` is what the
+agent reads to decide whether to load the skill — make it specific and embed the trigger phrases
+(English + Portuguese).
 
-**Name:** <skill-name>
-**Version:** 1.0.0
-**Triggers:** <when to use this skill>
+```markdown
+---
+name: <verb-substantive>
+description: >-
+  When to use this skill, with English + Portuguese trigger phrases embedded.
+metadata:
+  version: 1.0.0
+---
+
+# <Skill Title>
 
 ## Purpose
 <1-2 sentences>
+
+## Prerequisites
+<context files to read; reference .specs/config.md for constants>
 
 ## Instructions
 ### Step 1: <action>
 <specific guidance>
 
+## Output
+<what to report back>
+
 ## Examples
-<real-world scenario walkthrough>
+### Example 1: <scenario>
+<walkthrough>
 
 ## References
 AGENTS.md, .specs/memory/conventions.md, ...
 ```
+
+See `.specs/config.md## Skill Format` for the authoritative rules; `check-consistency` enforces
+them with a script.
 
 ### The `create-skill` Skill
 
@@ -428,7 +492,7 @@ When starting a new project with this methodology:
 3. [ ] Fill in `AGENTS.md` with project specifics (replace `{PLACEHOLDERS}`)
 4. [ ] Fill in `.specs/memory/conventions.md` with your coding standards
 5. [ ] Fill in `.specs/shared/schema-current.md` with your DB schema
-6. [ ] Create your first skill in `.opencode/skills/` (use `create-skill`)
+6. [ ] Create your first skill in `.claude/skills/<name>/SKILL.md` (use `create-skill`)
 7. [ ] Write your first ADR in `.specs/memory/architecture.md`
 8. [ ] Begin spec-driven: create `.specs/requirements/001-init/` for your first requirements
 

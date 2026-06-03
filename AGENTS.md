@@ -1,101 +1,17 @@
 # AGENTS.md — {PROJECT_NAME}
 
-> **TEMPLATE:** Replace all `{PLACEHOLDERS}` below with your project's specifics. Keep this file updated as the project evolves — it is the primary instruction source for AI agents working on this codebase.
+> Primary instruction source for AI agents working on this codebase. Keep this file updated as the project evolves.
 
 ## Overview
 
 | Layer | Tech |
 |---|---|
-| Shell / Platform | {TAURI or ELECTRON or WAILLS or WEB or CLI or MOBILE or LIBRARY} |
+| Shell / Platform | {TAURI or ELECTRON or WAILS or WEB or CLI or MOBILE or LIBRARY} |
 | Frontend | {REACT or VUE or SVELTE or ANGULAR or SOLID or HTMX or VANILLA or NONE} |
 | Backend | {RUST or NODE or PYTHON or GO or CSHARP or JAVA or ELIXIR or NONE} |
 | Database | {SQLITE or POSTGRES or MYSQL or MONGODB or SURREALDB or NONE} |
 | Auth | {LOGIN_METHOD} |
 | Language | {LANGUAGE} |
-
----
-
-## Spec-Driven Development Methodology
-
-This project uses **spec-driven development**. All changes flow through specs in `.specs/`.
-
-### Directory Structure
-
-```
-.opencode/
-└── skills/                    # Custom agent skills
-    ├── create-skill.md        # How to create new skills
-    └── ...
-
-.specs/
-├── requirements/              # Requirements documents (elicitation & analysis)
-│   └── <nnn>-<slug>/
-│       └── requirements.md
-├── templates/                 # Spec templates (reusable)
-│   ├── requirements-spec.md   # For requirements gathering
-│   ├── feature-spec.md        # For new features
-│   ├── migration-spec.md      # For schema/database changes
-│   └── bugfix-spec.md         # For bug corrections
-├── changes/                   # Active specs (one folder per change)
-│   └── <nnn>-<slug>/
-│       └── spec.md
-├── archive/                   # Completed specs (moved here after implementation)
-├── memory/                    # Persistent project knowledge
-│   ├── architecture.md        # Architectural decisions (ADRs)
-│   ├── conventions.md         # Code conventions
-│   └── glossary.md            # Entity mapping / terminology
-└── shared/                    # Shared reference documents
-    ├── schema-current.md      # Current database schema
-    ├── schema-target.md       # Target / future schema
-    └── entity-map.md          # Detailed entity mapping
-```
-
-### Spec Workflow
-
-1. Identify need → create folder `changes/<nnn>-<slug>/`
-2. Write `spec.md` using the appropriate template from `templates/`
-3. Review and approve spec with stakeholders
-4. Implement following the spec's requirements and checklist
-5. Move folder to `archive/`
-6. Update `memory/` if new architectural decisions were made
-
-### Naming Convention
-
-- Folders: `changes/<sequential-number>-<kebab-slug>/`
-- Examples: `changes/001-search-fields/`, `changes/002-fix-encoding/`, `changes/003-migration-foundation/`
-
----
-
-## Project Structure
-
-```
-src/                          # Application source
-├── {ENTRY_POINT}             # Route mapping / entry
-├── {ENTRY_POINT}             # Bootstrapping
-├── types/                    # Type definitions
-├── {STYLE_FILE}              # Global styles
-├── stores/                   # State management
-├── components/               # Reusable components
-│   └── layout/               # Layout components
-└── routes/                   # Page / route components
-    └── <Module>/
-        ├── <Module>List.{EXT}
-        └── <Module>Form.{EXT}
-
-backend/                      # Backend (if applicable)
-├── {MANIFEST_FILE}
-├── .env
-├── migrations/               # Database migrations
-├── src/
-│   ├── {ENTRY_POINT}
-│   ├── models/               # Data models
-│   ├── db/                   # Database layer
-│   │   ├── {DB_MODULE}
-│   │   ├── {SCHEMA_FILE}
-│   │   └── repository/       # CRUD per entity
-│   ├── {HANDLERS}/           # API handlers / controllers
-│   └── business/             # Business logic
-```
 
 ---
 
@@ -110,104 +26,87 @@ backend/                      # Backend (if applicable)
 
 ---
 
-## Architecture & Data Flow
+## Architecture
 
 ```
 {FRONTEND_COMPONENT}
   → {API_CALL}({endpoint}, {args})
     → {BACKEND_HANDLER}
-      → {REPOSITORY}
-        → {DATABASE}
+      → {SERVICE}
+        → {REPOSITORY} (local data)
+        → {ADAPTER}    (external API)
 ```
 
-### Routing
-- {ROUTING_STRATEGY}
-
-### Auth
-- {AUTH_MECHANISM}
+- **Routing:** {ROUTING_STRATEGY}
+- **Auth:** {AUTH_MECHANISM}
 
 ---
 
-## Coding Conventions
+## Project Conventions
 
-### Frontend
-- {STYLING_APPROACH}
-- {UI_LIBRARY}
-- **State management**: {STATE_MANAGEMENT}
-- **Forms**: {FORM_PATTERN}
-- **Client-side filtering**: Use a memoized/computed filter from the input state:
-  ```pseudocode
-  search = state("")
-  filtered = computed(() => {
-    if empty(search) return items
-    term = lowercase(search)
-    return items.filter(item => contains(lowercase(item.field), term))
-  })
-  ```
+Full conventions in `.specs/memory/conventions.md`. Summary:
 
-### Backend
-- **Repository pattern**: Each entity has its own repository module
-- **{HANDLER_PATTERN}**: Thin wrappers that call repository functions
-- **Naming**: {NAMING_CONVENTION}
-- **IDs**: {ID_STRATEGY}
+- **Frontend:** {STYLING_APPROACH}, {UI_LIBRARY}, state via {STATE_MANAGEMENT}
+- **Backend:** Repository (data), Adapter (external API), Service (business logic), {HANDLER_PATTERN}, naming: {NAMING_CONVENTION}
+- **Client-side filtering:** memoized/computed filter from input state
+- **IDs:** {ID_STRATEGY}
+- **Clean Code:** SOLID principles in `.specs/memory/clean-code.md`
+- **Reusable code:** catalog in `.specs/memory/component-catalog.md` — check before creating, add after creating
+- **Changelog:** generated from `.specs/archive/` via `update-changelog` skill, validated by `check-consistency`
 
 ---
 
 ## Testing (TDD Mandatory)
 
-> **IMPORTANT:** Tests are written BEFORE implementation. Never write code first.
+> Tests are written BEFORE implementation. Never write code first.
 
-### Framework
-- **Unit/Integration:** {TEST_FRAMEWORK}
-- **Component:** {COMPONENT_TEST_LIB}
-- **E2E:** {E2E_FRAMEWORK}
-- **Coverage:** {COVERAGE_TOOL} (threshold: {COVERAGE_THRESHOLD}%)
-
-### Test File Convention
-- Location: {co-located (`{File}.test.{EXT}`) | `__tests__/` directory}
-- Naming: `<FileUnderTest>.test.{EXT}`
-
-### TDD Workflow
-```
-Spec → Red (write failing test) → Green (implement) → Refactor → Repeat
-```
-
-### Test Command
-| Command | Where | Description |
-|---|---|---|
-| `{TEST_COMMAND}` | root | Run all tests |
-| `{TEST_WATCH_COMMAND}` | root | Run tests in watch mode |
-| `{TEST_COVERAGE_COMMAND}` | root | Run tests with coverage report |
-
----
-
-## Database
-
-### Tables
-| Table | Purpose |
+| | |
 |---|---|
-| {TABLE_1} | {DESCRIPTION} |
-| {TABLE_2} | {DESCRIPTION} |
+| **Framework** | {TEST_FRAMEWORK} |
+| **Coverage** | {COVERAGE_TOOL} (threshold: {COVERAGE_THRESHOLD}%) |
+| **Run tests** | `{TEST_COMMAND}` |
+| **Watch mode** | `{TEST_WATCH_COMMAND}` |
+| **Coverage report** | `{TEST_COVERAGE_COMMAND}` |
 
-### Seed Data
-{DEFAULT_SEED_DATA}
-
----
-
-## Sections with Search/Filter Status
-
-| Section | File | Search |
-|---|---|---|
-| {SECTION_1} | `{FILE}` | ✅ Text search |
-| {SECTION_2} | `{FILE}` | ❌ No search |
+Full testing conventions in `.specs/memory/conventions.md## Testing`.
 
 ---
 
-## Key Observations for Agents
+## Key Rules
 
-1. **{OBSERVATION_1}**
-2. **Pattern for new search fields**: follow existing implementations
-3. **When adding a new endpoint**: define model → repository → handler → register → add type definition
-4. **All changes must go through `.specs/`** — write spec first, implement second
-5. **TDD is mandatory** — write tests BEFORE implementation, follow Red → Green → Refactor
-6. **Every bugfix requires a regression test** that reproduces the bug and passes after the fix
+1. **All changes go through `.specs/`** — write spec first, implement second
+2. **TDD is mandatory** — follow Red → Green → Refactor cycle
+3. **Every bugfix requires a regression test** that reproduces the bug and passes after the fix
+4. **New endpoint pattern:** model → repository → service → handler → register → add type definition
+5. **New adapter pattern:** for external services, create adapter → inject into service → test with mock
+6. **Keep AGENTS.md updated** as the project evolves — it is the primary instruction source for agents
+7. **Maintain consistency** — run `node scripts/check-consistency.mjs` (or `"verificar consistência"`) before committing skill or config changes. Never hardcode config values; reference `.specs/config.md`.
+
+---
+
+## Skills
+
+Skills live in `.claude/skills/<name>/SKILL.md` (discovered by both opencode and Claude Code).
+Format rules: `.specs/config.md## Skill Format`.
+
+| Skill | Use it to… |
+|---|---|
+| `create-project` | Bootstrap a brand-new project from the starter-kit (clone + init). |
+| `init-project` | Configure an already-cloned starter-kit (9 stack questions, fills AGENTS.md, ADR-003). |
+| `gather-requirements` | Elicit requirements for a non-trivial change → `.specs/requirements/`. |
+| `run-change` | Decide ceremony (lightweight vs full) and drive small changes end to end. |
+| `run-tdd` | Drive the Red → Green → Refactor cycle for an active spec. |
+| `update-changelog` | Generate `CHANGELOG.md` entries from archived specs (script-backed). |
+| `check-consistency` | Validate skills/conventions via `scripts/check-consistency.mjs`. |
+| `create-skill` | Author a new skill in the canonical format. |
+
+---
+
+## Choosing the Change Path
+
+Match ceremony to the size of the change (the `run-change` skill automates this):
+
+- **Lightweight** — typo/docs/formatting (edit directly, no spec), or refactor / dependency bump /
+  trivial bugfix (micro-spec: Context + Tests + Checklist, then `run-tdd`).
+- **Full** — new user-facing behavior, multi-stakeholder, or unclear scope → `gather-requirements`
+  → full spec → `run-tdd`. Schema/data changes use `migration-spec.md`.

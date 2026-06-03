@@ -13,11 +13,14 @@ Este starter-kit implementa um fluxo completo de engenharia de software:
 
 ```
 IDEA BRUTA
-  → ELICITAÇÃO (requirements-gathering: User Stories, Use Cases, Job Stories, BDD)
+  → ELICITAÇÃO (gather-requirements: User Stories, Use Cases, Job Stories, BDD)
     → ANÁLISE (MoSCoW, stakeholders, riscos, dependências)
       → ESPECIFICAÇÃO (specs em .specs/changes/)
         → TDD (Red → Green → Refactor)
           → ARQUIVO (specs completas em .specs/archive/)
+        ↙
+MEMÓRIA (clean-code.md, component-catalog.md)
+CONSISTÊNCIA (check-consistency pré-commit)
 ```
 
 ### Pilares
@@ -28,11 +31,20 @@ IDEA BRUTA
 | **Spec-Driven Development** | Toda mudança passa por um documento de especificação |
 | **Test-Driven Development** | Testes escritos antes da implementação (Red → Green → Refactor) |
 | **ADR (Architecture Decision Records)** | Decisões de arquitetura documentadas e rastreáveis |
+| **Clean Code** | SOLID, métricas e anti-padrões definidos em `.specs/memory/clean-code.md` |
+| **Reusable Catalog** | Catálogo vivo de componentes reutilizáveis em `.specs/memory/component-catalog.md` |
+| **Consistency** | Validação automática de skills e convenções via `check-consistency` |
 | **AI-Agent Friendly** | Estrutura otimizada para agentes de IA via `AGENTS.md` e skills |
 
 ## Uso Rápido
 
-### 1. Copie o starter-kit
+### 1. (Recomendado) One-shot com skill
+
+Diga ao seu agente de IA: `"criar novo projeto"` ou `"create new project"`
+
+A skill `create-project` faz **tudo automaticamente**: clona o starter-kit do GitHub, limpa o `.git`, e inicia o bootstrap interativo com as 9 perguntas da stack. Nenhum comando manual necessário.
+
+### 2. (Alternativo) Clone manual
 
 ```bash
 git clone https://github.com/lucassnts963/starter-kit.git meu-projeto
@@ -41,27 +53,31 @@ rm -rf .git
 git init
 ```
 
-### 2. Execute o bootstrap interativo
-
 Diga ao seu agente de IA: `"start project"` ou `"iniciar projeto"`
 
 A skill `init-project` fará 9 perguntas sobre sua stack (shell, frontend, backend, banco, testes, cobertura, linguagem, package manager) e preencherá os templates automaticamente.
 
 ### 3. Comece a desenvolver
 
-Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill `requirements-gathering`.
+Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill `gather-requirements`.
 
 ## Estrutura de Diretórios
 
 ```
-├── .opencode/
-│   └── skills/                    # Skills para agentes de IA
-│       ├── create-skill.md        # Como criar novas skills
-│       ├── init-project.md        # Bootstrap de projeto novo
-│       ├── requirements-gathering.md  # Elicitação de requisitos
-│       └── tdd-workflow.md        # Ciclo TDD integrado às specs
+├── .claude/
+│   └── skills/                     # Skills (descobertas por opencode E Claude Code)
+│       └── <nome>/SKILL.md         # Uma pasta por skill, com frontmatter name+description
+│           # check-consistency, create-project, create-skill, gather-requirements,
+│           # init-project, run-change, run-tdd, update-changelog
+│
+├── scripts/
+│   ├── check-consistency.mjs       # Validador determinístico (roda no CI)
+│   └── update-changelog.mjs        # Gera changelog a partir do archive (idempotente)
+│
+├── .github/workflows/consistency.yml  # CI: valida skills + changelog em cada push/PR
 │
 ├── .specs/
+│   ├── config.md                  # Fonte única de constantes (URL, stacks, defaults, formato de skill)
 │   ├── requirements/              # Documentos de elicitação e análise
 │   │   └── <nnn>-<slug>/
 │   │       └── requirements.md
@@ -77,6 +93,8 @@ Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill 
 │   ├── archive/                   # Specs concluídas
 │   ├── memory/                    # Conhecimento persistente
 │   │   ├── architecture.md        # ADRs
+│   │   ├── clean-code.md          # Padrões de código limpo (SOLID, métricas)
+│   │   ├── component-catalog.md   # Catálogo de código reutilizável
 │   │   ├── conventions.md         # Convenções de código
 │   │   └── glossary.md            # Glossário de domínio
 │   └── shared/                    # Documentos de referência
@@ -84,8 +102,11 @@ Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill 
 │       ├── schema-target.md
 │       └── entity-map.md
 │
-├── AGENTS.md                      # Instruções para agentes de IA
+├── AGENTS.md                      # Instrução-raiz para agentes (índice de skills, fast-path)
+├── CLAUDE.md                      # Importa AGENTS.md (@AGENTS.md) — evita divergência
+├── CHANGELOG.md                   # Histórico de mudanças (gerado do archive)
 ├── METHODOLOGY.md                 # Guia completo da metodologia
+├── package.json                   # Scripts de tooling do kit (check, changelog)
 └── README.md
 ```
 
@@ -103,14 +124,18 @@ Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill 
 
 | Skill | Trigger | Função |
 |---|---|---|
-| `init-project` | `"start project"`, `"iniciar projeto"` | Bootstrap interativo de projeto novo |
-| `requirements-gathering` | `"levantar requisitos"`, `"requirements"` | Elicitação guiada de requisitos |
-| `tdd-workflow` | `"TDD"`, `"test first"` | Ciclo Red → Green → Refactor |
-| `create-skill` | `"create a skill"`, `"criar uma skill"` | Criar novas skills padronizadas |
+| `check-consistency` | `"verificar consistência"`, `"check consistency"` | Valida skills, catálogo e convenções |
+| `update-changelog` | `"atualizar changelog"`, `"update changelog"` | Gera changelog a partir do archive |
+| `create-project` | `"criar novo projeto"`, `"create new project"`, `"começar do zero"` | One-shot: clone + limpeza + bootstrap |
+| `init-project` | `"iniciar projeto"`, `"start project"`, `"bootstrap project"` | Bootstrap interativo (projeto já clonado) |
+| `gather-requirements` | `"levantar requisitos"`, `"gather requirements"`, `"elicitar requisitos"` | Elicitação guiada de requisitos |
+| `run-change` | `"mudança rápida"`, `"quick change"`, `"fazer mudança"`, `"run change"` | Roteador de cerimônia: caminho leve vs completo |
+| `run-tdd` | `"executar TDD"`, `"run TDD cycle"`, `"TDD"`, `"write tests"` | Ciclo Red → Green → Refactor |
+| `create-skill` | `"criar skill"`, `"create skill"`, `"adicionar skill"` | Criar novas skills padronizadas |
 
 ## Tecnologias Suportadas
 
-O starter-kit é agnóstico a tecnologia. Templates e placeholders suportam:
+O starter-kit é agnóstico a tecnologia. Veja `.specs/config.md` para a lista completa de stacks suportadas.
 
 | Camada | Opções |
 |---|---|
@@ -122,19 +147,27 @@ O starter-kit é agnóstico a tecnologia. Templates e placeholders suportam:
 
 ## Convenções
 
+- **Backend:** Repository (dados locais), Adapter (API externa), Service (lógica de negócio)
+- **Clean Code:** SOLID, funções ≤20 linhas, ≤3 parâmetros, injeção de dependência — veja `.specs/memory/clean-code.md`
+- **Reutilização:** consulte `.specs/memory/component-catalog.md` antes de criar código novo
 - **IDs sequenciais** por projeto: o mesmo número rastreia `requirements/` → `changes/` → `archive/`
 - **Slugs kebab-case**: `001-search-fields`, `002-fix-encoding`
 - **Placeholders** `{ENTRE_CHAVES}`: devem ser substituídos por valores reais do projeto
 - **Testes primeiro**: nunca escreva implementação antes de testes
 - **Bugfix = regression test**: todo bugfix começa com um teste que reproduz o bug
+- **Consistência**: execute `"verificar consistência"` antes de commits em skills ou config
 
 ## Referência Rápida de Comandos
 
 | Comando | Descrição |
 |---|---|
-| `git clone https://github.com/lucassnts963/starter-kit.git <projeto>` | Criar novo projeto |
-| `"start project"` | Iniciar bootstrap com agente de IA |
+| `"criar novo projeto"` | One-shot: criar projeto do zero (clone + bootstrap) |
+| `"iniciar projeto"` | Bootstrap interativo (projeto já clonado) |
 | `"levantar requisitos"` | Iniciar elicitação de requisitos |
+| `"executar TDD"` | Ciclo Red → Green → Refactor |
+| `"criar skill"` | Criar nova skill padronizada |
+| `"verificar consistência"` | Validar skills, catálogo e convenções |
+| `"atualizar changelog"` | Gerar changelog a partir do archive |
 | Ver `METHODOLOGY.md` | Guia completo da metodologia |
 
 ## Licença
