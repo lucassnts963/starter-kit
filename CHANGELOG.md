@@ -8,6 +8,11 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
 ## [Unreleased]
 
 ### Added
+- **`spec-kit` CLI** (`bin/spec-kit.mjs`, run via `npx github:lucassnts963/starter-kit <cmd>`): the
+  deterministic "hands" of the methodology — `init` / `adopt` / `upgrade` / `check`. It copies files
+  from its own npx-fetched location (no separate clone), resets identity files, refreshes tooling,
+  regenerates the skills index, and stamps the version; the agent skills still do the judgment parts.
+  Solves the bootstrap chicken-egg (no manual clone) and makes the mechanical file ops reliable.
 
 ### Changed
 
