@@ -177,8 +177,9 @@ function cmdUpgrade() {
   log(`✓ stamped .specs/config.md → Methodology Version ${to}`);
   if (grandfathered !== null)
     log(`✓ forward-only baseline written: ${grandfathered} pre-existing archived spec(s) grandfathered (exempt from the new traceability/alignment checks)`);
-  log("\nReview the diff. Judgment steps the CLI can't do (run the upgrade-methodology skill for these):");
+  log(`\nNext — run the reconcile-upgrade skill ("ajustar arquivos da metodologia") for the judgment steps:`);
   log("  • merge any new methodology sections / Key Rules into AGENTS.md (the skills list is auto-generated)");
+  log("  • adapt existing files to new conventions (e.g. give troubleshooting.md TRB-NN ids)");
   log("  • reconcile files you customized that this refresh overwrote (git diff shows them)");
   log("\nThen: node scripts/check-consistency.mjs  (new checks stay dormant until you have the artifacts).");
 }
