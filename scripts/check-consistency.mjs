@@ -217,21 +217,33 @@ function checkChangelog() {
 // Only real entries (`TRB-<digits>`) are validated. Commented-out examples are stripped first, so
 // the template's documentation block never counts; the check stays dormant until the first real
 // entry is recorded (mirrors the changelog check, which is skipped while the archive is empty).
+//
+// Entries may be flat (`## TRB-NNN`) or grouped by area (`## <Area>` with `### TRB-NNN` underneath),
+// and field labels are accepted in English OR Portuguese — the kit supports pt-BR projects, so the
+// schema must too. Each required field is matched as a bold-label prefix (so qualified labels like
+// `**Solução (rápida):**` still count).
+const TRB_FIELDS = [
+  { name: "Symptom/Sintoma", re: /\*\*\s*(Symptom|Sintoma)/i },
+  { name: "Root cause/Causa", re: /\*\*\s*(Root cause|Causa)/i },
+  { name: "Fix strategy/Solução", re: /\*\*\s*(Fix strategy|Solução|Soluç|Correção)/i },
+];
 function checkTroubleshooting() {
   if (!existsSync(TROUBLESHOOTING)) return pass("troubleshooting: file absent (skipped)");
   const text = readFileSync(TROUBLESHOOTING, "utf8")
     .replace(/\r\n/g, "\n")
     .replace(/<!--[\s\S]*?-->/g, ""); // drop commented examples — only live entries are validated
-  const headings = [...text.matchAll(/^## (TRB-\d+):.*$/gm)];
+  // Entry headings: `##` or `###` carrying a TRB id. Block ends at the next `##`/`###` heading.
+  const headings = [...text.matchAll(/^#{2,3}\s+(TRB-\d+)\b/gm)];
   if (headings.length === 0) return pass("troubleshooting: no entries yet (skipped)");
 
-  const REQUIRED = ["**Symptom:**", "**Root cause:**", "**Fix strategy:**"];
-  for (let i = 0; i < headings.length; i++) {
-    const id = headings[i][1];
-    const start = headings[i].index;
-    const end = i + 1 < headings.length ? headings[i + 1].index : text.length;
-    const block = text.slice(start, end);
-    const missing = REQUIRED.filter((f) => !block.includes(f));
+  const nextHeading = (from) => {
+    const m = text.slice(from).match(/\n#{2,3}\s/);
+    return m ? from + m.index : text.length;
+  };
+  for (const h of headings) {
+    const id = h[1];
+    const block = text.slice(h.index, nextHeading(h.index + h[0].length));
+    const missing = TRB_FIELDS.filter((f) => !f.re.test(block)).map((f) => f.name);
     if (missing.length) violate(`troubleshooting: ${id} missing field(s): ${missing.join(", ")}`);
   }
   if (!violations.some((v) => v.startsWith("troubleshooting:")))

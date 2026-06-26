@@ -15,6 +15,11 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
   Solves the bootstrap chicken-egg (no manual clone) and makes the mechanical file ops reliable.
 
 ### Changed
+- **Troubleshooting schema is now bilingual and groupable.** `check-consistency` accepts the required
+  fields in English **or** Portuguese (`Sintoma`/`Causa`/`Solução`) and validates entries whether flat
+  (`## TRB-NN`) or grouped by area (`## <Area>` + `### TRB-NN`). Previously a pt-BR or area-grouped
+  troubleshooting file passed silently (zero entries recognised) instead of being validated.
+  (Surfaced by a real pt-BR project's troubleshooting.md.)
 
 ### Fixed
 - **Forward-only baseline** for the 1.1.0 traceability + alignment-gate checks: upgrading a mature

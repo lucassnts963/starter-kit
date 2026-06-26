@@ -31,7 +31,7 @@ cross-incident lesson** and links back to that spec or commit.
 
 ## Entry Format
 
-Each entry is an `## TRB-<n>` heading (sequential, project-wide) with these fields:
+Each entry is a `TRB-<n>` heading (sequential id, project-wide) with these fields:
 
 ```markdown
 ## TRB-NNN: <short symptom>
@@ -47,6 +47,15 @@ Each entry is an `## TRB-<n>` heading (sequential, project-wide) with these fiel
 
 Required fields (validated by `check-consistency`): **Symptom**, **Root cause**, **Fix strategy**.
 `Context`, `Prevention`, and the `Related`/`Status` metadata are recommended but optional.
+
+**Language:** field labels may be written in **English or Portuguese** — the kit supports pt-BR
+projects, so the checker accepts either: `Symptom`/`Sintoma`, `Root cause`/`Causa`,
+`Fix strategy`/`Solução`. Write in your project's language; don't translate just to satisfy the check.
+
+**Structure:** for a few entries, a flat list of `## TRB-NNN` is fine. As the file grows, **group by
+area** — an `## <Area>` header (e.g. `## Toolchain`, `## Git`, `## Environment`) with `### TRB-NNN`
+entries underneath. Ids stay sequential and global across areas; the checker validates entries at
+either level.
 
 ---
 

@@ -53,6 +53,10 @@ Write the *distilled* lesson, not the raw debugging log. Fill the entry format f
 - **Prevention** — how to avoid it, or the early signal it is recurring.
 - Metadata line — `Date`, `Related` (`FIX-NN` / commit / PR), `Status`.
 
+Write field labels in the **project's language** (English or Portuguese — `Sintoma`/`Causa`/`Solução`
+are accepted). For a large file, group entries under `## <Area>` headers with `### TRB-NNN` beneath;
+ids stay global and sequential. The checker validates either layout.
+
 ### Step 4: Append and link
 
 Append the block under `## Entries` (bottom-append is the default, mirroring `log.md`). If the
