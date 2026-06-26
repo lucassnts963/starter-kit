@@ -96,6 +96,7 @@ ou `"mudança rápida"` para o caminho leve.
 │   ├── check-consistency.mjs       # Validador determinístico (roda no CI)
 │   ├── update-skills-index.mjs     # Gera .claude/skills/INDEX.md a partir das skills
 │   ├── session-context.mjs         # Resumo "onde paramos" (log + specs ativos)
+│   ├── cut-release.mjs             # Prepara release (corta CHANGELOG; não taggea)
 │   └── update-changelog.mjs        # Gera changelog a partir do archive (idempotente)
 │
 ├── .github/workflows/consistency.yml  # CI: valida skills + changelog em cada push/PR

@@ -7,6 +7,18 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
 
 ## [Unreleased]
 
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+---
+
+## [1.1.0] - 2026-06-26
+
 > Methodology version 1.1.0. See `METHODOLOGY.md## Methodology Versions` for the structure changelog.
 
 ### Added

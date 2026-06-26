@@ -11,6 +11,7 @@
 | `check-consistency` | Validate that every skill in `.claude/skills/` and the project's conventions hold, using a real script so the result is deterministic (not a best-effort prose scan). |
 | `create-project` | One-shot skill that bootstraps a completely new project from the starter-kit. |
 | `create-skill` | Guide to create new, standardized skills for this project. |
+| `cut-release` | Prepare a release deterministically and safely. |
 | `gather-requirements` | Guide the requirements elicitation process — from a raw idea or problem statement to a structured requirements document. |
 | `init-project` | Guide users through the initial setup of a new project following the spec-driven + TDD methodology. |
 | `record-troubleshooting` | Turn a hard-won debugging session into persistent project memory. |
