@@ -16,11 +16,12 @@ metadata:
 
 ## Purpose
 
-A project set up months ago is frozen at the methodology version it was bootstrapped with. When the
-starter-kit adds skills, templates, checker rules, or memory pages, those projects don't get them
-automatically. This skill closes that gap: it compares the project's methodology version against the
-kit's latest and applies **only the delta** — non-destructively, never re-running setup and never
-clobbering project content. It is `adopt-project` narrowed to "what changed since you last synced".
+Bring a project that already uses the methodology up to the starter-kit's latest version, applying
+**only the delta** — non-destructively, never re-running setup and never clobbering project content.
+A project set up months ago is frozen at the version it was bootstrapped with; when the kit adds
+skills, templates, checker rules, or memory pages, those projects don't get them automatically. This
+skill closes that gap by comparing the project's methodology version against the kit's latest. It is
+`adopt-project` narrowed to "what changed since you last synced".
 
 ## Prerequisites
 
@@ -63,12 +64,18 @@ project-owned file** — on any conflict, write the incoming file alongside with
 | **Purely additive files** | new skills (`review-alignment/`, `record-troubleshooting/`, this skill), new memory pages (`troubleshooting.md`, `log.md`), new templates | Copy in **only if absent**. |
 | **Kit-owned tooling** | `scripts/check-consistency.mjs`, `scripts/update-changelog.mjs`, the kit's own skills | If the project's copy is unmodified from the previous kit version, **refresh** it to get new rules. If the project diverged, place the new one as `*.kit` and ask. |
 | **Kit-owned templates** | `.specs/templates/*.md` | Same as tooling — refresh if unmodified, else `.kit` + ask. A changed template (e.g., `feature-spec.md` gaining the traceability link) matters for the new checker rules. |
-| **Project-owned docs** | `AGENTS.md`, `README.md`, `METHODOLOGY.md` | **Append** the new methodology sections/skill-table rows/Key Rules in clearly marked blocks; never delete project content. Confirm before merging. |
+| **Project-owned docs** | `AGENTS.md`, `README.md`, `METHODOLOGY.md` | **Append** new methodology sections/Key Rules in clearly marked blocks; never delete project content. Confirm before merging. (The skills list is **not** maintained here — see Step 4d.) |
 | **Project history** | `CHANGELOG.md` | **Never touch.** It is the project's own changelog, not the kit's — do not overlay or reset it. (Refresh only the kit's `changelog-template.md` under `.specs/templates/`.) |
 | **`config.md`** | the project's own | Do **not** overwrite (it holds project-specific Defaults). Only **add missing sections** and bump the version (Step 6). |
 
 Pull the list of "what's new per version" from the Methodology Versions table so nothing in the
 `FROM`→`TO` range is skipped.
+
+**Step 4d — regenerate the skills index.** After copying the new skills, run
+`node scripts/update-skills-index.mjs` to rebuild `.claude/skills/INDEX.md`. Because the index is
+generated from the skill folders, this picks up the new skills **and** preserves any the project
+added on its own — no manual table-merge into `AGENTS.md`, which only references the index. This is
+the step that removes the one judgment-dependent part of the upgrade.
 
 ### Step 5: Validate
 
@@ -108,7 +115,7 @@ blocks).
 4. Add `.specs/memory/troubleshooting.md`, `.specs/memory/log.md`,
    `.claude/skills/{review-alignment,record-troubleshooting,upgrade-methodology}/`; refresh
    `scripts/check-consistency.mjs` and `.specs/templates/feature-spec.md` (unmodified → refresh);
-   append the new skill-table rows + Key Rules 8–9 to `AGENTS.md`.
+   run `update-skills-index.mjs` to rebuild `INDEX.md`; append Key Rules 8–9 to `AGENTS.md`.
 5. `node scripts/check-consistency.mjs` → exit 0 (new checks dormant).
 6. Bump `config.md` version to `1.1.0`.
 7. Report the delta, nothing overwritten.

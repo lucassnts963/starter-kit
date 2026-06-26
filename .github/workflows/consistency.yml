@@ -17,3 +17,5 @@ jobs:
         run: node scripts/check-consistency.mjs
       - name: Verify changelog is up to date
         run: node scripts/update-changelog.mjs --check
+      - name: Verify skills index is up to date
+        run: node scripts/update-skills-index.mjs --check

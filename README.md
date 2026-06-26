@@ -88,13 +88,12 @@ ou `"mudança rápida"` para o caminho leve.
 ```
 ├── .claude/
 │   └── skills/                     # Skills (descobertas por opencode E Claude Code)
+│       ├── INDEX.md                # Catálogo gerado (name + purpose de cada skill)
 │       └── <nome>/SKILL.md         # Uma pasta por skill, com frontmatter name+description
-│           # check-consistency, create-project, create-skill, gather-requirements,
-│           # init-project, record-troubleshooting, review-alignment, run-change, run-tdd,
-│           # update-changelog, upgrade-methodology
 │
 ├── scripts/
 │   ├── check-consistency.mjs       # Validador determinístico (roda no CI)
+│   ├── update-skills-index.mjs     # Gera .claude/skills/INDEX.md a partir das skills
 │   └── update-changelog.mjs        # Gera changelog a partir do archive (idempotente)
 │
 ├── .github/workflows/consistency.yml  # CI: valida skills + changelog em cada push/PR
@@ -149,20 +148,10 @@ ou `"mudança rápida"` para o caminho leve.
 
 ## Skills Disponíveis
 
-| Skill | Trigger | Função |
-|---|---|---|
-| `check-consistency` | `"verificar consistência"`, `"check consistency"` | Valida skills, catálogo e convenções |
-| `update-changelog` | `"atualizar changelog"`, `"update changelog"` | Gera changelog a partir do archive |
-| `create-project` | `"criar novo projeto"`, `"create new project"`, `"começar do zero"` | One-shot: clone + limpeza + bootstrap |
-| `init-project` | `"iniciar projeto"`, `"start project"`, `"bootstrap project"` | Bootstrap interativo (projeto já clonado) |
-| `adopt-project` | `"adotar metodologia"`, `"adopt methodology"`, `"adicionar metodologia"` | Adota a metodologia em projeto existente (sem clobber) |
-| `upgrade-methodology` | `"atualizar metodologia"`, `"upgrade methodology"`, `"sincronizar metodologia"` | Atualiza um projeto que já usa a metodologia para a versão mais nova (só o delta) |
-| `gather-requirements` | `"levantar requisitos"`, `"gather requirements"`, `"elicitar requisitos"` | Elicitação guiada de requisitos |
-| `review-alignment` | `"revisar alinhamento"`, `"review alignment"`, `"verificar spec"` | Verifica semanticamente se o spec cobre os requisitos (gate de archive) |
-| `run-change` | `"mudança rápida"`, `"quick change"`, `"fazer mudança"`, `"run change"` | Roteador de cerimônia: caminho leve vs completo |
-| `run-tdd` | `"executar TDD"`, `"run TDD cycle"`, `"TDD"`, `"write tests"` | Ciclo Red → Green → Refactor |
-| `record-troubleshooting` | `"registrar troubleshooting"`, `"record troubleshooting"`, `"registrar solução"` | Grava erro/correção em `memory/troubleshooting.md` |
-| `create-skill` | `"criar skill"`, `"create skill"`, `"adicionar skill"` | Criar novas skills padronizadas |
+O catálogo completo de skills (nome + propósito) é **gerado** em
+[`.claude/skills/INDEX.md`](.claude/skills/INDEX.md) a partir das próprias skills
+(`node scripts/update-skills-index.mjs`), validado pelo `check-consistency` — não há lista mantida à
+mão. Os **gatilhos** (trigger phrases) de cada skill estão na *Referência Rápida de Comandos* abaixo.
 
 ## Tecnologias Suportadas
 

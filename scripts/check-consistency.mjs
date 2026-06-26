@@ -125,6 +125,23 @@ function checkSkills() {
   }
 }
 
+// --- Check 1b: the generated skills index lists exactly the skills that exist ---
+function checkSkillsIndex() {
+  const indexFile = join(SKILLS_DIR, "INDEX.md");
+  if (!existsSync(indexFile)) {
+    return violate("skills index: .claude/skills/INDEX.md missing — run node scripts/update-skills-index.mjs");
+  }
+  const text = readFileSync(indexFile, "utf8").replace(/\r\n/g, "\n");
+  const listed = new Set([...text.matchAll(/^\|\s*`([a-z][a-z-]+)`\s*\|/gm)].map((m) => m[1]));
+  const dirs = new Set(listSkillDirs());
+  for (const d of dirs)
+    if (!listed.has(d)) violate(`skills index: skill '${d}' exists but is not in INDEX.md (regenerate it)`);
+  for (const n of listed)
+    if (!dirs.has(n)) violate(`skills index: INDEX.md lists '${n}' but no such skill dir (stale — regenerate)`);
+  if (!violations.some((v) => v.startsWith("skills index:")))
+    pass(`skills index: ${dirs.size} skills, INDEX.md in sync`);
+}
+
 // --- Check 2: skills must not hardcode the repo URL (docs/badges may) ---
 function checkHardcoded() {
   const files = walkMarkdown(SKILLS_DIR);
@@ -319,6 +336,7 @@ function rel(p) {
 
 // --- Run ---
 checkSkills();
+checkSkillsIndex();
 checkHardcoded();
 checkOrphans();
 checkChangelog();

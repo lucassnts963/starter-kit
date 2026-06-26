@@ -91,23 +91,12 @@ Full testing conventions in `.specs/memory/conventions.md## Testing`.
 
 ## Skills
 
-Skills live in `.claude/skills/<name>/SKILL.md` (discovered by both opencode and Claude Code).
-Format rules: `.specs/config.md## Skill Format`.
-
-| Skill | Use it to… |
-|---|---|
-| `create-project` | Bootstrap a brand-new project from the starter-kit (clone + init). |
-| `init-project` | Configure an already-cloned starter-kit (9 stack questions, fills AGENTS.md, ADR-003). |
-| `adopt-project` | Overlay the methodology onto an EXISTING project (detect stack, no clobber, draft memory from code). |
-| `upgrade-methodology` | Bring a project already on the methodology up to the kit's latest version (version-aware, non-destructive). |
-| `gather-requirements` | Elicit requirements for a non-trivial change → `.specs/requirements/`. |
-| `review-alignment` | Semantically verify a spec covers its requirements (omissions, drift) before TDD/archive. |
-| `run-change` | Decide ceremony (lightweight vs full) and drive small changes end to end. |
-| `run-tdd` | Drive the Red → Green → Refactor cycle for an active spec. |
-| `record-troubleshooting` | Append a distilled error/fix entry to `memory/troubleshooting.md` after a non-trivial debug. |
-| `update-changelog` | Generate `CHANGELOG.md` entries from archived specs (script-backed). |
-| `check-consistency` | Validate skills/conventions via `scripts/check-consistency.mjs`. |
-| `create-skill` | Author a new skill in the canonical format. |
+Skills live in `.claude/skills/<name>/SKILL.md` (auto-discovered by both opencode and Claude Code).
+The full catalog — every skill with its purpose — is **generated** at
+[`.claude/skills/INDEX.md`](.claude/skills/INDEX.md) from the skills themselves
+(`node scripts/update-skills-index.mjs`), and `check-consistency` enforces it stays in sync. Read the
+index for the current skill list rather than maintaining one here. Format rules:
+`.specs/config.md## Skill Format`.
 
 ---
 

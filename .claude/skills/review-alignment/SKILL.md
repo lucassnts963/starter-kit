@@ -14,12 +14,12 @@ metadata:
 
 ## Purpose
 
-The deterministic checker (`check-consistency.mjs`) validates *structure* — that links and ids exist.
-It is blind to *meaning*: whether a spec actually addresses what each requirement says. This skill is
-the **semantic tier** of the two-tier consistency model: an adversarial LLM review of a spec against
-its requirements document, producing a stamped `alignment-review.md` verdict per requirement. It
-exists because, in practice, generated specs drift — silently dropping requirements that were written
-down. This catches that before it becomes history.
+Semantically verify that a spec faithfully covers its requirements document, producing a stamped
+`alignment-review.md` verdict per requirement. This is the **semantic tier** of the two-tier
+consistency model: the deterministic checker (`check-consistency.mjs`) validates *structure* — that
+links and ids exist — but is blind to *meaning*, whether a spec actually addresses what each
+requirement says. This adversarial LLM review exists because, in practice, generated specs drift —
+silently dropping requirements that were written down. It catches that before it becomes history.
 
 ## Prerequisites
 

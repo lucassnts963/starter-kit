@@ -17,6 +17,9 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
   faithfully covers its requirements — producing a stamped `alignment-review.md` verdict.
 - **Methodology versioning** (`.specs/config.md## Methodology Version`) and the `upgrade-methodology`
   skill, which brings an existing methodology project up to the kit's latest version non-destructively.
+- **Generated skills index** (`.claude/skills/INDEX.md` via `scripts/update-skills-index.mjs`): the
+  single source for the skills catalog, compiled from each `SKILL.md`. `AGENTS.md`/`README` reference
+  it instead of hand-maintaining the list; `check-consistency` + CI enforce it stays in sync.
 
 ### Changed
 - `check-consistency.mjs` gained four checks: troubleshooting-entry schema, requirements↔spec
