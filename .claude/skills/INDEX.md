@@ -14,6 +14,7 @@
 | `cut-release` | Prepare a release deterministically and safely. |
 | `gather-requirements` | Guide the requirements elicitation process — from a raw idea or problem statement to a structured requirements document. |
 | `init-project` | Guide users through the initial setup of a new project following the spec-driven + TDD methodology. |
+| `reconcile-upgrade` | Finish a methodology upgrade. |
 | `record-troubleshooting` | Turn a hard-won debugging session into persistent project memory. |
 | `resume-session` | Print a "where you left off" summary so a new session regains context without re-reading the whole project. |
 | `review-alignment` | Semantically verify that a spec faithfully covers its requirements document, producing a stamped `alignment-review.md` verdict per requirement. |

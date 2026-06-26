@@ -44,8 +44,9 @@ The script validates, deterministically:
 4. **Changelog integrity** — every archived spec ID appears in `CHANGELOG.md` and vice-versa
    (skipped when the archive is empty).
 5. **Troubleshooting schema** — every live `TRB-NN` entry in `.specs/memory/troubleshooting.md`
-   carries the required fields (Symptom, Root cause, Fix strategy). Commented examples are ignored;
-   skipped when there are no entries yet.
+   carries the required fields (Symptom, Root cause, Fix strategy), in English **or** Portuguese
+   (`Sintoma`/`Causa`/`Solução`). Entries may be flat (`## TRB-NN`) or grouped by area
+   (`## <Area>` + `### TRB-NN`). Commented examples are ignored; skipped when there are no entries yet.
 6. **Requirements↔spec traceability** — for each requirements doc paired with a same-numbered spec,
    the spec has a `## Requirements Traceability` section linking back to the requirements doc, and
    every `REQ-NN` the spec cites exists there (no dangling ids). Skipped until a pair exists.

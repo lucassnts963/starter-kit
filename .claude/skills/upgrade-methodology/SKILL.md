@@ -86,18 +86,27 @@ existed, breaking CI on a mature repo. When upgrading from a version `< 1.1.0`, 
 those legacy specs; specs archived from now on must comply. Never overwrite an existing baseline. (The
 `spec-kit upgrade` CLI does this automatically; only do it by hand if upgrading without the CLI.)
 
-### Step 5: Validate
+### Step 5: Stamp the New Version
+
+Update `.specs/config.md## Methodology Version` to `TO` (add the section if it was absent). This is
+what makes the *next* upgrade start from the correct baseline — and lets the reconcile phase read the
+version it is reconciling to.
+
+### Step 6: Reconcile (judgment phase → `reconcile-upgrade`)
+
+The copy/refresh above is mechanical. The judgment phase — merging new sections into `AGENTS.md`,
+reconciling any overwritten tooling, and **adapting the project's existing files to conventions the
+new version introduced** (e.g. giving a `troubleshooting.md` `TRB-NN` ids, adding traceability links) —
+is driven by the **`reconcile-upgrade`** skill. Run it now (it is the same phase a user gets after the
+`spec-kit upgrade` CLI). Hand off the `FROM → TO` range so it knows what changed.
+
+### Step 7: Validate
 
 Run `node scripts/check-consistency.mjs` (expect exit 0). New rules shipped by the upgrade (e.g.,
 traceability, troubleshooting schema, alignment gate) start **dormant** until the project has the
 artifacts that trigger them, so a clean project still passes immediately after upgrade.
 
-### Step 6: Stamp the New Version
-
-Update `.specs/config.md## Methodology Version` to `TO` (add the section if it was absent). This is
-what makes the *next* upgrade start from the correct baseline.
-
-### Step 7: Report
+### Step 8: Report
 
 Report `FROM`→`TO`, the per-version delta applied, every file added/refreshed, every `.kit` collision
 left for the user to reconcile, the doc sections appended, the check-consistency result, and the new
@@ -140,6 +149,7 @@ make no changes, stop.
 
 - `.specs/config.md` — repository URL and the `## Methodology Version` stamp this skill reads/bumps
 - `METHODOLOGY.md## Methodology Versions` — the per-version changelog of what each upgrade introduces
+- `.claude/skills/reconcile-upgrade/SKILL.md` — the judgment phase this delegates to (Step 6)
 - `.claude/skills/adopt-project/SKILL.md` — first-time adoption (the non-versioned sibling of this skill)
 - `.claude/skills/check-consistency/SKILL.md` — run after upgrading to validate the result
 - `.claude/skills/create-skill/SKILL.md` — how the skills being copied in are structured
