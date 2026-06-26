@@ -616,7 +616,7 @@ own product version:
 | Version | Date | What it introduced |
 |---|---|---|
 | **1.0.0** | 2026-06-02 | Initial methodology: requirements → spec → TDD, memory docs (ADRs, conventions, clean-code, component-catalog, glossary), `check-consistency` + `update-changelog`, the core skills. |
-| **1.1.0** | 2026-06-26 | Memory-as-LLM-Wiki: `troubleshooting.md` + `record-troubleshooting`, append-only `log.md`. Two-tier consistency: `review-alignment` skill + requirements↔spec traceability and the blocking alignment gate in `check-consistency`. `upgrade-methodology` skill + methodology versioning. |
+| **1.1.0** | 2026-06-26 | Memory-as-LLM-Wiki: `troubleshooting.md` + `record-troubleshooting`, append-only `log.md`. Two-tier consistency: `review-alignment` skill + requirements↔spec traceability and the blocking alignment gate in `check-consistency`. `upgrade-methodology` skill + methodology versioning. Clean `changelog-template.md` so bootstrapped projects don't inherit the kit's changelog. |
 
 ---
 

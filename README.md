@@ -113,7 +113,8 @@ ou `"mudança rápida"` para o caminho leve.
 │   │   ├── feature-spec.md        # Template de feature
 │   │   ├── bugfix-spec.md         # Template de bugfix
 │   │   ├── migration-spec.md      # Template de migração
-│   │   └── test-spec.md           # Template de cobertura de testes
+│   │   ├── test-spec.md           # Template de cobertura de testes
+│   │   └── changelog-template.md  # CHANGELOG.md limpo (reset no bootstrap do projeto)
 │   ├── archive/                   # Specs concluídas
 │   ├── memory/                    # Conhecimento persistente (LLM-Wiki: ver METHODOLOGY.md §6)
 │   │   ├── architecture.md        # ADRs

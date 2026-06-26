@@ -64,6 +64,7 @@ project-owned file** — on any conflict, write the incoming file alongside with
 | **Kit-owned tooling** | `scripts/check-consistency.mjs`, `scripts/update-changelog.mjs`, the kit's own skills | If the project's copy is unmodified from the previous kit version, **refresh** it to get new rules. If the project diverged, place the new one as `*.kit` and ask. |
 | **Kit-owned templates** | `.specs/templates/*.md` | Same as tooling — refresh if unmodified, else `.kit` + ask. A changed template (e.g., `feature-spec.md` gaining the traceability link) matters for the new checker rules. |
 | **Project-owned docs** | `AGENTS.md`, `README.md`, `METHODOLOGY.md` | **Append** the new methodology sections/skill-table rows/Key Rules in clearly marked blocks; never delete project content. Confirm before merging. |
+| **Project history** | `CHANGELOG.md` | **Never touch.** It is the project's own changelog, not the kit's — do not overlay or reset it. (Refresh only the kit's `changelog-template.md` under `.specs/templates/`.) |
 | **`config.md`** | the project's own | Do **not** overwrite (it holds project-specific Defaults). Only **add missing sections** and bump the version (Step 6). |
 
 Pull the list of "what's new per version" from the Methodology Versions table so nothing in the

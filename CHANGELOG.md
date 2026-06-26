@@ -27,6 +27,10 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
   requirements→spec transition and gate archiving on an `aligned` verdict.
 
 ### Fixed
+- Projects bootstrapped from the kit no longer inherit the kit's own `CHANGELOG.md`. A clean
+  `.specs/templates/changelog-template.md` is shipped, and `init-project`/`create-project` reset the
+  project's `CHANGELOG.md` (plus `package.json` identity and `README.md`) from it; `adopt-project`
+  creates a clean one only when the project has none.
 
 ### Removed
 

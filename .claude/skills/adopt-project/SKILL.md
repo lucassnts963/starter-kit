@@ -58,7 +58,10 @@ copy **only paths that do not already exist** in the target:
 - `.github/workflows/consistency.yml`
 
 Do **not** copy the kit's `README.md`, `METHODOLOGY.md`, `CHANGELOG.md`, or `LICENSE` over the
-project's own. Remove the temp clone when done.
+project's own. The kit's `CHANGELOG.md` is the *kit's* history — never overlay it. If the project has
+**no** `CHANGELOG.md`, create a clean one from `.specs/templates/changelog-template.md` so the
+`update-changelog` tooling has its `## [Unreleased]` section to write into. Remove the temp clone
+when done.
 
 ### Step 3: Detect the Stack (don't ask blindly)
 
