@@ -7,6 +7,20 @@ values. This file is harness-agnostic — it is not specific to any agent tool.
 
 - **URL:** `https://github.com/lucassnts963/starter-kit.git`
 
+## Methodology Version
+
+- **Version:** 1.1.0
+
+This is the version of the methodology *structure* — skills, templates, scripts, and the `.specs/`
+memory layout — that this project was bootstrapped or last upgraded to. It is **not** the project's
+own product version (that lives in `package.json`/`CHANGELOG.md`).
+
+Because `init-project`, `create-project`, and `adopt-project` all copy this `config.md` into the new
+project, the project automatically carries the methodology version it was set up with. The
+`upgrade-methodology` skill compares this value against the starter-kit's latest to compute and apply
+the delta. Bump it (minor for additive structure, major for breaking layout changes) and add a row to
+`METHODOLOGY.md## Methodology Versions` whenever the methodology structure changes.
+
 ## Supported Technologies
 
 | Layer | Options |

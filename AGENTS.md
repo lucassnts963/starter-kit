@@ -99,6 +99,7 @@ Format rules: `.specs/config.md## Skill Format`.
 | `create-project` | Bootstrap a brand-new project from the starter-kit (clone + init). |
 | `init-project` | Configure an already-cloned starter-kit (9 stack questions, fills AGENTS.md, ADR-003). |
 | `adopt-project` | Overlay the methodology onto an EXISTING project (detect stack, no clobber, draft memory from code). |
+| `upgrade-methodology` | Bring a project already on the methodology up to the kit's latest version (version-aware, non-destructive). |
 | `gather-requirements` | Elicit requirements for a non-trivial change → `.specs/requirements/`. |
 | `review-alignment` | Semantically verify a spec covers its requirements (omissions, drift) before TDD/archive. |
 | `run-change` | Decide ceremony (lightweight vs full) and drive small changes end to end. |

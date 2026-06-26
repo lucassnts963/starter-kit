@@ -35,7 +35,9 @@ test retrofit is demanded.
 
 1. Confirm this is an existing repo **with code** (e.g., a manifest + a `src/`/equivalent), not an
    empty dir and not a starter-kit (no unfilled `{PROJECT_NAME}` in an existing `AGENTS.md`). If it
-   looks greenfield, suggest `init-project` instead and stop.
+   looks greenfield, suggest `init-project` instead and stop. If the repo **already uses the
+   methodology** (`.specs/config.md` exists, with or without a `## Methodology Version`), this is not
+   a first-time adoption — suggest the `upgrade-methodology` skill instead and stop.
 2. Recommend working on a branch: `git checkout -b chore/adopt-methodology`.
 3. Build a **collision report** — check whether each of these already exists in the target:
    `.claude/skills/`, `.specs/`, `scripts/`, `.github/workflows/`, `AGENTS.md`, `CLAUDE.md`,
@@ -179,8 +181,9 @@ A report covering:
 
 ## References
 
-- `.specs/config.md` — repository URL, supported stack options, and the canonical Skill Format
+- `.specs/config.md` — repository URL, supported stack options, methodology version, Skill Format
 - `.claude/skills/init-project/SKILL.md` — placeholder→value mapping reused in Step 3
+- `.claude/skills/upgrade-methodology/SKILL.md` — for repos that already adopted the methodology
 - `.claude/skills/run-change/SKILL.md` — first real change after adoption
 - `.specs/memory/conventions.md`, `.specs/memory/component-catalog.md`, `.specs/memory/architecture.md` — scaffolds to draft into
 - `AGENTS.md` — template/host for the methodology sections

@@ -67,6 +67,17 @@ A skill `adopt-project` **detecta** sua stack (sem perguntas cegas), traz os arq
 real (convenções, catálogo de componentes, schema, ADR da stack) e registra um **baseline de
 cobertura forward-only** (TDD obrigatório só para mudanças novas).
 
+### Já usa a metodologia? Atualize para a versão mais nova
+
+Se o projeto **já adotou** a metodologia e você quer só **as melhorias mais recentes** (novas skills,
+templates, regras do checker, páginas de memória), não rode `adopt-project` de novo. Diga:
+`"atualizar metodologia"` ou `"upgrade methodology"`.
+
+A skill `upgrade-methodology` é **versão-aware**: compara a versão da metodologia do projeto
+(`.specs/config.md## Methodology Version`) com a do starter-kit e aplica **apenas o delta**, de forma
+não-destrutiva — adiciona o que falta, atualiza o tooling do kit, e *anexa* (sem sobrescrever) as
+novas seções aos docs do projeto. Veja o changelog de estrutura em `METHODOLOGY.md## Methodology Versions`.
+
 ### 3. Comece a desenvolver
 
 Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill `gather-requirements`,
@@ -80,7 +91,7 @@ ou `"mudança rápida"` para o caminho leve.
 │       └── <nome>/SKILL.md         # Uma pasta por skill, com frontmatter name+description
 │           # check-consistency, create-project, create-skill, gather-requirements,
 │           # init-project, record-troubleshooting, review-alignment, run-change, run-tdd,
-│           # update-changelog
+│           # update-changelog, upgrade-methodology
 │
 ├── scripts/
 │   ├── check-consistency.mjs       # Validador determinístico (roda no CI)
@@ -144,6 +155,7 @@ ou `"mudança rápida"` para o caminho leve.
 | `create-project` | `"criar novo projeto"`, `"create new project"`, `"começar do zero"` | One-shot: clone + limpeza + bootstrap |
 | `init-project` | `"iniciar projeto"`, `"start project"`, `"bootstrap project"` | Bootstrap interativo (projeto já clonado) |
 | `adopt-project` | `"adotar metodologia"`, `"adopt methodology"`, `"adicionar metodologia"` | Adota a metodologia em projeto existente (sem clobber) |
+| `upgrade-methodology` | `"atualizar metodologia"`, `"upgrade methodology"`, `"sincronizar metodologia"` | Atualiza um projeto que já usa a metodologia para a versão mais nova (só o delta) |
 | `gather-requirements` | `"levantar requisitos"`, `"gather requirements"`, `"elicitar requisitos"` | Elicitação guiada de requisitos |
 | `review-alignment` | `"revisar alinhamento"`, `"review alignment"`, `"verificar spec"` | Verifica semanticamente se o spec cobre os requisitos (gate de archive) |
 | `run-change` | `"mudança rápida"`, `"quick change"`, `"fazer mudança"`, `"run change"` | Roteador de cerimônia: caminho leve vs completo |
@@ -182,6 +194,7 @@ O starter-kit é agnóstico a tecnologia. Veja `.specs/config.md` para a lista c
 | `"criar novo projeto"` | One-shot: criar projeto do zero (clone + bootstrap) |
 | `"iniciar projeto"` | Bootstrap interativo (projeto já clonado) |
 | `"adotar metodologia"` | Adotar a metodologia em projeto existente (detecta stack, sem clobber) |
+| `"atualizar metodologia"` | Atualizar um projeto que já usa a metodologia para a versão mais nova (só o delta) |
 | `"mudança rápida"` | Roteador de cerimônia: leve vs completo |
 | `"levantar requisitos"` | Iniciar elicitação de requisitos |
 | `"revisar alinhamento"` | Verificar semanticamente se o spec cobre os requisitos (gate de archive) |

@@ -577,6 +577,47 @@ Legacy code gets a **forward-only TDD baseline**: the current coverage is record
 must not regress, and TDD + clean-code thresholds apply to new or changed code — never as a
 retroactive gate.
 
+### Three Entry Paths (and how to stay current)
+
+There are three distinct situations, each with its own skill — pick by where your project is:
+
+| Situation | Skill | What it does |
+|---|---|---|
+| **Brand-new project** (nothing yet) | `create-project` → `init-project` | Clone the kit, clean git, ask the 9 stack questions, fill the templates. |
+| **Existing project with code** (no methodology) | `adopt-project` | Detect the stack, overlay the methodology without clobbering, draft memory from real code. |
+| **Project already on the methodology** (older version) | `upgrade-methodology` | Compare the project's methodology version to the kit's latest and apply only the delta, non-destructively. |
+
+The first two **always pull in the current methodology** — they copy `.claude/skills/` and `.specs/`
+wholesale from the kit, so a fresh setup includes every skill and memory page that exists today. The
+third exists for projects set up *before* a given improvement landed: it brings them forward without
+re-running setup.
+
+### Upgrading an existing methodology project
+
+The methodology structure is **versioned** (`.specs/config.md## Methodology Version`). Every project
+carries the version it was set up with, because all three entry skills copy `config.md` into it. To
+pull newer improvements (new skills, templates, scripts, memory pages, or checker rules) into a
+project that already uses the methodology, run the **`upgrade-methodology`** skill
+(`"atualizar metodologia"` / `"upgrade methodology"`). It is version-aware and non-destructive:
+
+- **Diff, don't reinstall.** It clones the latest kit, compares it to the project, and applies **only
+  what is missing or outdated** — new files are added, kit-owned tooling/skills are refreshed, and
+  methodology sections are *appended* to project-owned docs (`AGENTS.md`) rather than overwriting them.
+- **Never clobbers project content.** Customized files that would collide are placed alongside with a
+  `.kit` suffix for you to reconcile — same golden rule as `adopt-project`.
+- **Stamps the new version.** On success it bumps `config.md## Methodology Version` and reports the
+  applied delta, so the next upgrade starts from the right baseline.
+
+### Methodology Versions
+
+The structure version (skills + templates + scripts + memory layout), independent of any project's
+own product version:
+
+| Version | Date | What it introduced |
+|---|---|---|
+| **1.0.0** | 2026-06-02 | Initial methodology: requirements → spec → TDD, memory docs (ADRs, conventions, clean-code, component-catalog, glossary), `check-consistency` + `update-changelog`, the core skills. |
+| **1.1.0** | 2026-06-26 | Memory-as-LLM-Wiki: `troubleshooting.md` + `record-troubleshooting`, append-only `log.md`. Two-tier consistency: `review-alignment` skill + requirements↔spec traceability and the blocking alignment gate in `check-consistency`. `upgrade-methodology` skill + methodology versioning. |
+
 ---
 
 ## 11. Real-World Template
