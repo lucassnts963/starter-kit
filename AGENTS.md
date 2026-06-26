@@ -84,7 +84,7 @@ Full testing conventions in `.specs/memory/conventions.md## Testing`.
 5. **New adapter pattern:** for external services, create adapter → inject into service → test with mock
 6. **Keep AGENTS.md updated** as the project evolves — it is the primary instruction source for agents
 7. **Maintain consistency** — run `node scripts/check-consistency.mjs` (or `"verificar consistência"`) before committing skill or config changes. Never hardcode config values; reference `.specs/config.md`.
-8. **Feed the memory** — search `memory/troubleshooting.md` before debugging; after a non-trivial fix, record a `TRB-` entry; at the end of a work session, append a block to `memory/log.md`. Memory that isn't written is re-derived.
+8. **Feed the memory** — at the start of a session run `resume-session` (`"onde paramos"`) for where you left off; search `memory/troubleshooting.md` before debugging; after a non-trivial fix, record a `TRB-` entry; at the end of a work session, append a block to `memory/log.md`. Memory that isn't written is re-derived.
 9. **Two-tier consistency** — `check-consistency.mjs` validates *structure* (links, ids, schema) deterministically; the `review-alignment` skill validates *semantics* (does the spec actually cover its requirements?). A requirements-backed spec cannot be archived until its `alignment-review.md` is complete and `aligned`. Structure is enforced by script; meaning is enforced by an LLM review the script gates on.
 
 ---

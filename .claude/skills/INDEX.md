@@ -14,6 +14,7 @@
 | `gather-requirements` | Guide the requirements elicitation process — from a raw idea or problem statement to a structured requirements document. |
 | `init-project` | Guide users through the initial setup of a new project following the spec-driven + TDD methodology. |
 | `record-troubleshooting` | Turn a hard-won debugging session into persistent project memory. |
+| `resume-session` | Print a "where you left off" summary so a new session regains context without re-reading the whole project. |
 | `review-alignment` | Semantically verify that a spec faithfully covers its requirements document, producing a stamped `alignment-review.md` verdict per requirement. |
 | `run-change` | Keep the methodology proportional to the change. |
 | `run-tdd` | Guide agents through the Test-Driven Development cycle integrated with the spec-driven methodology. |

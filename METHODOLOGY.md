@@ -427,6 +427,13 @@ block, append one short entry (Did / Learned / Next / Refs). Newest at the botto
 history. It complements the `CHANGELOG.md` — the changelog answers *"what shipped"*, the log answers
 *"what was I doing, and why, last session"*.
 
+**Session continuity (where you left off).** The log feeds an automatic resume: `scripts/session-context.mjs`
+prints the latest log entry (and its `Next:` line), the specs in flight with their alignment-gate
+state, and any requirements without a spec. A Claude Code **SessionStart hook** (`.claude/settings.json`)
+injects this at the start of every session; the `resume-session` skill (`"onde paramos"` /
+`"where did I leave off"`) runs the same summary on demand and in opencode (which has no hook). The
+script is silent when there is nothing to resume, and never disrupts a session.
+
 > **Memory as an LLM-Wiki.** The `memory/` directory is, in effect, a project-decision wiki in the
 > sense of [Karpathy's LLM-Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f):
 > a persistent, compounding artifact the agent maintains — curated pages (ADRs, conventions, catalog),
@@ -616,7 +623,7 @@ own product version:
 | Version | Date | What it introduced |
 |---|---|---|
 | **1.0.0** | 2026-06-02 | Initial methodology: requirements → spec → TDD, memory docs (ADRs, conventions, clean-code, component-catalog, glossary), `check-consistency` + `update-changelog`, the core skills. |
-| **1.1.0** | 2026-06-26 | Memory-as-LLM-Wiki: `troubleshooting.md` + `record-troubleshooting`, append-only `log.md`. Two-tier consistency: `review-alignment` skill + requirements↔spec traceability and the blocking alignment gate in `check-consistency`. `upgrade-methodology` skill + methodology versioning. Clean `changelog-template.md` so bootstrapped projects don't inherit the kit's changelog. Generated skills index (`.claude/skills/INDEX.md`) as the single source for the skills catalog. |
+| **1.1.0** | 2026-06-26 | Memory-as-LLM-Wiki: `troubleshooting.md` + `record-troubleshooting`, append-only `log.md`. Two-tier consistency: `review-alignment` skill + requirements↔spec traceability and the blocking alignment gate in `check-consistency`. `upgrade-methodology` skill + methodology versioning. Clean `changelog-template.md` so bootstrapped projects don't inherit the kit's changelog. Generated skills index (`.claude/skills/INDEX.md`) as the single source for the skills catalog. Session continuity: `session-context.mjs` + SessionStart hook + `resume-session` skill ("where you left off"). |
 
 ---
 

@@ -10,6 +10,7 @@
     "changelog": "node scripts/update-changelog.mjs",
     "changelog:check": "node scripts/update-changelog.mjs --check",
     "skills:index": "node scripts/update-skills-index.mjs",
-    "skills:index:check": "node scripts/update-skills-index.mjs --check"
+    "skills:index:check": "node scripts/update-skills-index.mjs --check",
+    "session": "node scripts/session-context.mjs"
   }
 }

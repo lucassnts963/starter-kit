@@ -20,6 +20,10 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
 - **Generated skills index** (`.claude/skills/INDEX.md` via `scripts/update-skills-index.mjs`): the
   single source for the skills catalog, compiled from each `SKILL.md`. `AGENTS.md`/`README` reference
   it instead of hand-maintaining the list; `check-consistency` + CI enforce it stays in sync.
+- **Session continuity** ("where you left off"): `scripts/session-context.mjs` summarizes the latest
+  `log.md` entry, specs in flight (with alignment-gate state), and requirements without a spec. Wired
+  as a Claude Code `SessionStart` hook (`.claude/settings.json`) and runnable via the `resume-session`
+  skill (`"onde paramos"`) — harness-agnostic, silent when there's nothing to resume.
 
 ### Changed
 - `check-consistency.mjs` gained four checks: troubleshooting-entry schema, requirements↔spec

@@ -87,6 +87,7 @@ ou `"mudança rápida"` para o caminho leve.
 
 ```
 ├── .claude/
+│   ├── settings.json               # Hook SessionStart: "onde paramos" (Claude Code; opencode ignora)
 │   └── skills/                     # Skills (descobertas por opencode E Claude Code)
 │       ├── INDEX.md                # Catálogo gerado (name + purpose de cada skill)
 │       └── <nome>/SKILL.md         # Uma pasta por skill, com frontmatter name+description
@@ -94,6 +95,7 @@ ou `"mudança rápida"` para o caminho leve.
 ├── scripts/
 │   ├── check-consistency.mjs       # Validador determinístico (roda no CI)
 │   ├── update-skills-index.mjs     # Gera .claude/skills/INDEX.md a partir das skills
+│   ├── session-context.mjs         # Resumo "onde paramos" (log + specs ativos)
 │   └── update-changelog.mjs        # Gera changelog a partir do archive (idempotente)
 │
 ├── .github/workflows/consistency.yml  # CI: valida skills + changelog em cada push/PR
