@@ -79,7 +79,8 @@ ou `"mudança rápida"` para o caminho leve.
 │   └── skills/                     # Skills (descobertas por opencode E Claude Code)
 │       └── <nome>/SKILL.md         # Uma pasta por skill, com frontmatter name+description
 │           # check-consistency, create-project, create-skill, gather-requirements,
-│           # init-project, record-troubleshooting, run-change, run-tdd, update-changelog
+│           # init-project, record-troubleshooting, review-alignment, run-change, run-tdd,
+│           # update-changelog
 │
 ├── scripts/
 │   ├── check-consistency.mjs       # Validador determinístico (roda no CI)
@@ -94,7 +95,8 @@ ou `"mudança rápida"` para o caminho leve.
 │   │       └── requirements.md
 │   ├── changes/                   # Specs ativas (implementação)
 │   │   └── <nnn>-<slug>/
-│   │       └── spec.md
+│   │       ├── spec.md
+│   │       └── alignment-review.md # Veredito semântico spec↔requisitos (gate de archive)
 │   ├── templates/                 # Templates reutilizáveis
 │   │   ├── requirements-spec.md   # Template de requisitos (15 seções)
 │   │   ├── feature-spec.md        # Template de feature
@@ -143,6 +145,7 @@ ou `"mudança rápida"` para o caminho leve.
 | `init-project` | `"iniciar projeto"`, `"start project"`, `"bootstrap project"` | Bootstrap interativo (projeto já clonado) |
 | `adopt-project` | `"adotar metodologia"`, `"adopt methodology"`, `"adicionar metodologia"` | Adota a metodologia em projeto existente (sem clobber) |
 | `gather-requirements` | `"levantar requisitos"`, `"gather requirements"`, `"elicitar requisitos"` | Elicitação guiada de requisitos |
+| `review-alignment` | `"revisar alinhamento"`, `"review alignment"`, `"verificar spec"` | Verifica semanticamente se o spec cobre os requisitos (gate de archive) |
 | `run-change` | `"mudança rápida"`, `"quick change"`, `"fazer mudança"`, `"run change"` | Roteador de cerimônia: caminho leve vs completo |
 | `run-tdd` | `"executar TDD"`, `"run TDD cycle"`, `"TDD"`, `"write tests"` | Ciclo Red → Green → Refactor |
 | `record-troubleshooting` | `"registrar troubleshooting"`, `"record troubleshooting"`, `"registrar solução"` | Grava erro/correção em `memory/troubleshooting.md` |
@@ -181,6 +184,7 @@ O starter-kit é agnóstico a tecnologia. Veja `.specs/config.md` para a lista c
 | `"adotar metodologia"` | Adotar a metodologia em projeto existente (detecta stack, sem clobber) |
 | `"mudança rápida"` | Roteador de cerimônia: leve vs completo |
 | `"levantar requisitos"` | Iniciar elicitação de requisitos |
+| `"revisar alinhamento"` | Verificar semanticamente se o spec cobre os requisitos (gate de archive) |
 | `"executar TDD"` | Ciclo Red → Green → Refactor |
 | `"registrar troubleshooting"` | Gravar erro + estratégia de correção em `memory/troubleshooting.md` |
 | `"criar skill"` | Criar nova skill padronizada |

@@ -25,6 +25,8 @@ Ensures tests are always written before implementation code.
 - `.specs/memory/clean-code.md` — clean code standards (SOLID, metrics, anti-patterns)
 - `.specs/memory/component-catalog.md` — reusable components (check before creating)
 - The active spec in `.specs/changes/<nnn>-<slug>/spec.md`
+- For specs that have a requirements doc: an `aligned` verdict from the `review-alignment` skill
+  (`alignment-review.md`) before starting — implementing a misaligned spec just bakes the drift in
 
 ## Instructions
 
@@ -94,10 +96,14 @@ Run `<TEST_COVERAGE_COMMAND>`. Verify no regressions and that coverage meets `{C
 Mark complete: tests written first (Red), all passing (Green), refactored without breaking tests,
 coverage meets threshold.
 
-### Step 10: Update Changelog (only if archived)
+### Step 10: Gate, Archive, Update Changelog
 
-If the spec was moved to `.specs/archive/`, run the `update-changelog` skill ("atualizar changelog"
-/ "update changelog"). If the spec is still in `changes/`, skip this step.
+Before moving a spec to `.specs/archive/`: if it has a requirements doc, re-run the `review-alignment`
+skill so its `alignment-review.md` reflects the final spec and reads `Verdict: aligned`. The
+`check-consistency` gate **blocks** archiving a requirements-backed spec without a complete, aligned
+review. Then move the spec to `archive/` and run `node scripts/check-consistency.mjs` to confirm the
+gate is green. Finally, run the `update-changelog` skill ("atualizar changelog" / "update
+changelog"). If the spec is still in `changes/`, skip the archive/changelog steps.
 
 ## Output
 
@@ -127,4 +133,5 @@ files → test passes (Green) → full suite (no regressions) → update checkli
 - `.specs/memory/architecture.md` — ADR-002 (TDD)
 - `.specs/memory/clean-code.md` — SOLID, metrics, anti-patterns
 - `.specs/templates/feature-spec.md`, `.specs/templates/bugfix-spec.md`, `.specs/templates/test-spec.md`
+- `.claude/skills/review-alignment/SKILL.md` — alignment gate required before archiving a spec
 - `.claude/skills/update-changelog/SKILL.md` — run after archiving a spec

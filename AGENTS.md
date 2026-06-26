@@ -85,6 +85,7 @@ Full testing conventions in `.specs/memory/conventions.md## Testing`.
 6. **Keep AGENTS.md updated** as the project evolves — it is the primary instruction source for agents
 7. **Maintain consistency** — run `node scripts/check-consistency.mjs` (or `"verificar consistência"`) before committing skill or config changes. Never hardcode config values; reference `.specs/config.md`.
 8. **Feed the memory** — search `memory/troubleshooting.md` before debugging; after a non-trivial fix, record a `TRB-` entry; at the end of a work session, append a block to `memory/log.md`. Memory that isn't written is re-derived.
+9. **Two-tier consistency** — `check-consistency.mjs` validates *structure* (links, ids, schema) deterministically; the `review-alignment` skill validates *semantics* (does the spec actually cover its requirements?). A requirements-backed spec cannot be archived until its `alignment-review.md` is complete and `aligned`. Structure is enforced by script; meaning is enforced by an LLM review the script gates on.
 
 ---
 
@@ -99,6 +100,7 @@ Format rules: `.specs/config.md## Skill Format`.
 | `init-project` | Configure an already-cloned starter-kit (9 stack questions, fills AGENTS.md, ADR-003). |
 | `adopt-project` | Overlay the methodology onto an EXISTING project (detect stack, no clobber, draft memory from code). |
 | `gather-requirements` | Elicit requirements for a non-trivial change → `.specs/requirements/`. |
+| `review-alignment` | Semantically verify a spec covers its requirements (omissions, drift) before TDD/archive. |
 | `run-change` | Decide ceremony (lightweight vs full) and drive small changes end to end. |
 | `run-tdd` | Drive the Red → Green → Refactor cycle for an active spec. |
 | `record-troubleshooting` | Append a distilled error/fix entry to `memory/troubleshooting.md` after a non-trivial debug. |
@@ -115,4 +117,5 @@ Match ceremony to the size of the change (the `run-change` skill automates this)
 - **Lightweight** — typo/docs/formatting (edit directly, no spec), or refactor / dependency bump /
   trivial bugfix (micro-spec: Context + Tests + Checklist, then `run-tdd`).
 - **Full** — new user-facing behavior, multi-stakeholder, or unclear scope → `gather-requirements`
-  → full spec → `run-tdd`. Schema/data changes use `migration-spec.md`.
+  → full spec → `review-alignment` (semantic gate) → `run-tdd`. Schema/data changes use
+  `migration-spec.md`.

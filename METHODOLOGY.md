@@ -215,6 +215,38 @@ Every archived spec generates a changelog entry automatically. The changelog liv
 
 **Workflow:** after moving a spec to archive, run `"atualizar changelog"` or `"update changelog"`. Validate coverage with `"verificar consistência"`.
 
+### Two-Tier Consistency: Structure vs. Semantics
+
+A deterministic script can prove that `REQ-03` *appears* in a spec; it cannot prove the spec *means*
+to address what `REQ-03` says. Generated specs drift — silently dropping requirements that were
+written down. This methodology guards that boundary with **two complementary tiers**:
+
+| Tier | Question it answers | How | Tool |
+|---|---|---|---|
+| **Structural** (deterministic) | Do the links and ids line up? Any orphan/dangling/missing-schema? | A script, in CI | `check-consistency.mjs` |
+| **Semantic** (LLM) | Does the spec *faithfully cover* each requirement? Omissions, contradictions, scope drift? | An adversarial LLM review | `review-alignment` skill |
+
+The two tiers are wired together so neither is skippable:
+
+1. **Prevention** — `feature-spec.md` requires a `## Requirements Traceability` section that links the
+   requirements doc (a relative Markdown link, portable to GitHub *and* Obsidian) and lists every
+   `REQ-NN`. The canonical join key is the **id**, not the link syntax — the checker resolves
+   traceability by `REQ-NN`, so the kit stays 100% file-based and tool-agnostic (no Obsidian
+   dependency, no link database).
+2. **Detection** — at the requirements→spec transition, the `review-alignment` skill judges each
+   `REQ-NN` (`Covered` / `Partial` / `Missing` / `Contradicted`) with cited evidence and writes
+   `alignment-review.md`. It defaults to the worse verdict when coverage is not explicit, to counter
+   rubber-stamping.
+3. **Enforcement** — `check-consistency.mjs` verifies the structural links (traceability present, no
+   dangling `REQ` ids) and **gates the archive**: a requirements-backed spec cannot be archived until
+   its `alignment-review.md` exists, covers every defined `REQ-NN`, and reads `Verdict: aligned`. The
+   script enforces *that the review ran and passed*; the LLM does the judging.
+
+This is the complete form of a wiki "lint" (à la Karpathy): orphan/dangling/gap checks are
+deterministic; contradiction and omission checks are delegated to the LLM tier — each check handled
+by the mechanism suited to it. The gate is **blocking on archive** (the error is caught before it
+becomes history) and advisory mid-flight (no LLM call on every commit).
+
 ---
 
 ## 4. TDD Integration (Test-Driven Development)
