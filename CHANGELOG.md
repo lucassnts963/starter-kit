@@ -17,6 +17,11 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
 ### Changed
 
 ### Fixed
+- **Forward-only baseline** for the 1.1.0 traceability + alignment-gate checks: upgrading a mature
+  repo no longer fails CI on specs archived before those rules existed. `upgrade` (and the
+  `upgrade-methodology` skill) snapshot the existing archive into `.specs/baseline.json` when crossing
+  into 1.1.0, and `check-consistency` grandfathers those legacy specs. Specs archived afterward comply.
+  (Surfaced by upgrading a real 16-spec project.)
 
 ### Removed
 

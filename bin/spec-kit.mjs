@@ -90,6 +90,25 @@ function resetChangelog() {
 }
 function cmp(a, b) { return a.localeCompare(b, undefined, { numeric: true }); }
 
+// Forward-only baseline: when a project crosses into the version that introduced the
+// traceability/alignment checks (1.1.0), snapshot its existing archived specs so those legacy specs
+// are grandfathered (exempt) — new specs still comply. Mirrors the kit's forward-only TDD baseline.
+const GATE_VERSION = "1.1.0";
+function writeBaselineIfCrossing(from, to) {
+  if (!(cmp(from, GATE_VERSION) < 0 && cmp(to, GATE_VERSION) >= 0)) return null;
+  const baselinePath = rel(TARGET, ".specs/baseline.json");
+  if (existsSync(baselinePath)) return null; // never overwrite an existing baseline
+  const archiveDir = rel(TARGET, ".specs/archive");
+  const dirs = isDir(archiveDir)
+    ? readdirSync(archiveDir).filter((d) => d !== ".gitkeep" && isDir(join(archiveDir, d)))
+    : [];
+  writeFileSync(
+    baselinePath,
+    JSON.stringify({ methodologyBaseline: to, grandfatheredArchive: dirs }, null, 2) + "\n"
+  );
+  return dirs.length;
+}
+
 // --- commands ---
 function cmdInit() {
   guardNotInKit();
@@ -152,8 +171,12 @@ function cmdUpgrade() {
   }
   writeFileSync(cfgPath, cfg);
 
+  const grandfathered = writeBaselineIfCrossing(from, to);
+
   log(`✓ added ${added.length} new paths, refreshed ${refreshed} tooling files, regenerated the skills index`);
   log(`✓ stamped .specs/config.md → Methodology Version ${to}`);
+  if (grandfathered !== null)
+    log(`✓ forward-only baseline written: ${grandfathered} pre-existing archived spec(s) grandfathered (exempt from the new traceability/alignment checks)`);
   log("\nReview the diff. Judgment steps the CLI can't do (run the upgrade-methodology skill for these):");
   log("  • merge any new methodology sections / Key Rules into AGENTS.md (the skills list is auto-generated)");
   log("  • reconcile files you customized that this refresh overwrote (git diff shows them)");

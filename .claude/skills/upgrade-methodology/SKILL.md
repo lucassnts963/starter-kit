@@ -78,6 +78,14 @@ generated from the skill folders, this picks up the new skills **and** preserves
 added on its own — no manual table-merge into `AGENTS.md`, which only references the index. This is
 the step that removes the one judgment-dependent part of the upgrade.
 
+**Step 4e — forward-only baseline (when crossing into 1.1.0).** The 1.1.0 traceability and
+alignment-gate checks would otherwise fire **retroactively** on specs archived before those rules
+existed, breaking CI on a mature repo. When upgrading from a version `< 1.1.0`, write
+`.specs/baseline.json` snapshotting the **current** `.specs/archive/*` dirs:
+`{ "methodologyBaseline": "<to>", "grandfatheredArchive": ["<dir>", …] }`. `check-consistency` exempts
+those legacy specs; specs archived from now on must comply. Never overwrite an existing baseline. (The
+`spec-kit upgrade` CLI does this automatically; only do it by hand if upgrading without the CLI.)
+
 ### Step 5: Validate
 
 Run `node scripts/check-consistency.mjs` (expect exit 0). New rules shipped by the upgrade (e.g.,
