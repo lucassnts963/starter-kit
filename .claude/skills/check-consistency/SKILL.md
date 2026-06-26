@@ -54,6 +54,11 @@ The script validates, deterministically:
    reads `Verdict: aligned`. This is the structural enforcement of the semantic review; the script
    checks *that the review ran and passed*, not the meaning itself.
 
+> **Forward-only baseline.** Checks 6–7 never apply retroactively: archive dirs listed in
+> `.specs/baseline.json` (`grandfatheredArchive`, written by `upgrade`/`upgrade-methodology` when a
+> repo first crosses into 1.1.0) are **exempt**. Specs archived after the baseline must comply. This
+> mirrors the kit's forward-only TDD baseline — upgrading a mature repo never breaks CI on legacy specs.
+
 > Tiers 6–7 are the structural half of the two-tier consistency model (`METHODOLOGY.md`). Semantic
 > judgment — whether a spec truly covers a requirement — is the `review-alignment` skill's job, which
 > this gate makes non-skippable.

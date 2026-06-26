@@ -38,6 +38,23 @@ CONSISTÊNCIA (check-consistency pré-commit)
 
 ## Uso Rápido
 
+### 0. (Mais rápido) Via CLI, sem clonar
+
+Sem clonar nada, rode a CLI direto do GitHub (o `npx` baixa o kit e copia os arquivos para o
+diretório atual):
+
+```bash
+npx github:lucassnts963/starter-kit init      # novo projeto (scaffold + CHANGELOG limpo + tooling)
+npx github:lucassnts963/starter-kit adopt     # projeto existente: sobrepõe sem clobber
+npx github:lucassnts963/starter-kit upgrade   # projeto que já usa a metodologia: aplica só o delta
+npx github:lucassnts963/starter-kit check     # roda os checks de consistência aqui
+```
+
+A CLI faz a parte **determinística** (copiar templates, resetar CHANGELOG, atualizar tooling, regenerar
+o índice, carimbar a versão); depois você roda a **skill** correspondente (`init-project` /
+`adopt-project` / `upgrade-methodology`) para a parte de **julgamento** (stack, memória, merges). Fixe
+uma versão com `#vX.Y.Z` para builds reprodutíveis. Ela nunca executa passos outward-facing (git, releases).
+
 ### 1. (Recomendado) One-shot com skill
 
 Diga ao seu agente de IA: `"criar novo projeto"` ou `"create new project"`
@@ -91,6 +108,9 @@ ou `"mudança rápida"` para o caminho leve.
 │   └── skills/                     # Skills (descobertas por opencode E Claude Code)
 │       ├── INDEX.md                # Catálogo gerado (name + purpose de cada skill)
 │       └── <nome>/SKILL.md         # Uma pasta por skill, com frontmatter name+description
+│
+├── bin/
+│   └── spec-kit.mjs               # CLI: init | adopt | upgrade | check (npx, sem clonar)
 │
 ├── scripts/
 │   ├── check-consistency.mjs       # Validador determinístico (roda no CI)

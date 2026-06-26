@@ -18,6 +18,20 @@ const ARCHIVE_DIR = join(ROOT, ".specs", "archive");
 const REQUIREMENTS_DIR = join(ROOT, ".specs", "requirements");
 const CHANGES_DIR = join(ROOT, ".specs", "changes");
 const TROUBLESHOOTING = join(ROOT, ".specs", "memory", "troubleshooting.md");
+const BASELINE = join(ROOT, ".specs", "baseline.json");
+
+// Forward-only grandfathering: archived specs that predate the 1.1.0 traceability/alignment rules
+// (recorded at upgrade time) are exempt from those checks. New specs always comply. Returns a Set of
+// archive dir names. This mirrors the kit's forward-only TDD baseline — never a retroactive gate.
+function grandfatheredArchive() {
+  if (!existsSync(BASELINE)) return new Set();
+  try {
+    return new Set(JSON.parse(readFileSync(BASELINE, "utf8")).grandfatheredArchive || []);
+  } catch {
+    return new Set();
+  }
+}
+const GRANDFATHERED = grandfatheredArchive();
 
 const NAME_RE = /^[a-z]+(-[a-z]+)+$/;
 const CANONICAL_SECTIONS = [
@@ -270,6 +284,7 @@ function checkTraceability() {
     if (!num || reqText === null) continue;
     const spec = findSpec(num);
     if (!spec) continue; // requirements written but spec not started yet — valid in-progress state
+    if (spec.where === "archive" && GRANDFATHERED.has(spec.dir)) continue; // forward-only: legacy spec exempt
     checked++;
 
     const defined = reqIdSet(reqText);
@@ -300,6 +315,7 @@ function checkAlignmentGate() {
 
   let gated = 0;
   for (const ad of specDirs(ARCHIVE_DIR)) {
+    if (GRANDFATHERED.has(ad)) continue; // forward-only: spec archived before the gate existed
     const num = numPrefix(ad);
     const reqDir = num ? findReqDir(num) : null;
     if (!reqDir) continue; // archived spec without requirements (lightweight path) — gate does not apply
@@ -321,9 +337,10 @@ function checkAlignmentGate() {
     if (unreviewed.length)
       violate(`alignment gate: archive/${ad}/alignment-review.md does not cover ${unreviewed.join(", ")}`);
   }
-  if (gated === 0) return pass("alignment gate: no archived spec has requirements yet (skipped)");
+  const exempt = GRANDFATHERED.size ? ` (${GRANDFATHERED.size} legacy spec(s) grandfathered)` : "";
+  if (gated === 0) return pass(`alignment gate: no archived spec has requirements yet (skipped)${exempt}`);
   if (!violations.some((v) => v.startsWith("alignment gate:")))
-    pass(`alignment gate: ${gated} archived spec(s) reviewed and aligned`);
+    pass(`alignment gate: ${gated} archived spec(s) reviewed and aligned${exempt}`);
 }
 function findReqDir(num) {
   for (const d of specDirs(REQUIREMENTS_DIR)) if (numPrefix(d) === num) return d;

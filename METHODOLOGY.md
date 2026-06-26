@@ -247,6 +247,12 @@ deterministic; contradiction and omission checks are delegated to the LLM tier â
 by the mechanism suited to it. The gate is **blocking on archive** (the error is caught before it
 becomes history) and advisory mid-flight (no LLM call on every commit).
 
+**Forward-only, never retroactive.** When an existing project upgrades to 1.1.0, these checks would
+otherwise fire on specs archived before the rules existed. They don't: the upgrade records a
+`.specs/baseline.json` snapshot of the current archive, and `check-consistency` grandfathers those
+legacy specs. Only specs archived from the baseline onward must comply â€” the same forward-only
+principle the kit applies to its TDD coverage baseline. Upgrading a mature repo never breaks its CI.
+
 ---
 
 ## 4. TDD Integration (Test-Driven Development)

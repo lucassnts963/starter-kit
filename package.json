@@ -5,6 +5,9 @@
   "license": "MIT",
   "type": "module",
   "private": true,
+  "bin": {
+    "spec-kit": "bin/spec-kit.mjs"
+  },
   "scripts": {
     "check": "node scripts/check-consistency.mjs",
     "changelog": "node scripts/update-changelog.mjs",
