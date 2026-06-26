@@ -8,11 +8,27 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+---
+
+## [1.2.0] - 2026-06-26
+
+### Added
 - **`spec-kit` CLI** (`bin/spec-kit.mjs`, run via `npx github:lucassnts963/starter-kit <cmd>`): the
   deterministic "hands" of the methodology — `init` / `adopt` / `upgrade` / `check`. It copies files
   from its own npx-fetched location (no separate clone), resets identity files, refreshes tooling,
   regenerates the skills index, and stamps the version; the agent skills still do the judgment parts.
   Solves the bootstrap chicken-egg (no manual clone) and makes the mechanical file ops reliable.
+- **`reconcile-upgrade` skill** — the judgment phase after an upgrade: migrates `AGENTS.md` to the
+  methodology split, adapts existing project files to new conventions (e.g. gives a `troubleshooting.md`
+  `TRB-NN` ids), records the upgrade in `log.md`, and ends on a green check. `spec-kit upgrade` and
+  `upgrade-methodology` hand off to it.
 
 ### Changed
 - **AGENTS.md ↔ methodology split.** Kit-owned methodology rules (Key Rules, change path, skills,
@@ -57,10 +73,6 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
 - **Generated skills index** (`.claude/skills/INDEX.md` via `scripts/update-skills-index.mjs`): the
   single source for the skills catalog, compiled from each `SKILL.md`. `AGENTS.md`/`README` reference
   it instead of hand-maintaining the list; `check-consistency` + CI enforce it stays in sync.
-- **`reconcile-upgrade` skill** — the judgment phase after an upgrade: merges new sections into
-  `AGENTS.md`, reconciles overwritten tooling, and **adapts existing project files to conventions a
-  new version introduced** (e.g. gives a `troubleshooting.md` `TRB-NN` ids, adds traceability links),
-  ending on a green check. `spec-kit upgrade` and `upgrade-methodology` now hand off to it.
 - **Session continuity** ("where you left off"): `scripts/session-context.mjs` summarizes the latest
   `log.md` entry, specs in flight (with alignment-gate state), and requirements without a spec. Wired
   as a Claude Code `SessionStart` hook (`.claude/settings.json`) and runnable via the `resume-session`
