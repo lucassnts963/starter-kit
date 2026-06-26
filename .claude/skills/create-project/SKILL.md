@@ -87,6 +87,8 @@ A complete, initialized project directory ready for development, containing:
 - `.specs/memory/conventions.md` — narrowed to the chosen stack
 - `.specs/memory/architecture.md` — with ADR-003 appended
 - `.specs/requirements/001-init/requirements.md` and `.specs/changes/001-init/spec.md`
+- A clean `CHANGELOG.md` (the project's own, reset from the template — not the kit's history),
+  and `package.json`/`README.md` reset to the project's identity (handled by init-project Step 6)
 - Clean git history (fresh `git init`)
 
 ## Examples

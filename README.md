@@ -67,6 +67,17 @@ A skill `adopt-project` **detecta** sua stack (sem perguntas cegas), traz os arq
 real (convenções, catálogo de componentes, schema, ADR da stack) e registra um **baseline de
 cobertura forward-only** (TDD obrigatório só para mudanças novas).
 
+### Já usa a metodologia? Atualize para a versão mais nova
+
+Se o projeto **já adotou** a metodologia e você quer só **as melhorias mais recentes** (novas skills,
+templates, regras do checker, páginas de memória), não rode `adopt-project` de novo. Diga:
+`"atualizar metodologia"` ou `"upgrade methodology"`.
+
+A skill `upgrade-methodology` é **versão-aware**: compara a versão da metodologia do projeto
+(`.specs/config.md## Methodology Version`) com a do starter-kit e aplica **apenas o delta**, de forma
+não-destrutiva — adiciona o que falta, atualiza o tooling do kit, e *anexa* (sem sobrescrever) as
+novas seções aos docs do projeto. Veja o changelog de estrutura em `METHODOLOGY.md## Methodology Versions`.
+
 ### 3. Comece a desenvolver
 
 Diga ao agente: `"levantar requisitos"` para iniciar a elicitação com a skill `gather-requirements`,
@@ -76,13 +87,16 @@ ou `"mudança rápida"` para o caminho leve.
 
 ```
 ├── .claude/
+│   ├── settings.json               # Hook SessionStart: "onde paramos" (Claude Code; opencode ignora)
 │   └── skills/                     # Skills (descobertas por opencode E Claude Code)
+│       ├── INDEX.md                # Catálogo gerado (name + purpose de cada skill)
 │       └── <nome>/SKILL.md         # Uma pasta por skill, com frontmatter name+description
-│           # check-consistency, create-project, create-skill, gather-requirements,
-│           # init-project, run-change, run-tdd, update-changelog
 │
 ├── scripts/
 │   ├── check-consistency.mjs       # Validador determinístico (roda no CI)
+│   ├── update-skills-index.mjs     # Gera .claude/skills/INDEX.md a partir das skills
+│   ├── session-context.mjs         # Resumo "onde paramos" (log + specs ativos)
+│   ├── cut-release.mjs             # Prepara release (corta CHANGELOG; não taggea)
 │   └── update-changelog.mjs        # Gera changelog a partir do archive (idempotente)
 │
 ├── .github/workflows/consistency.yml  # CI: valida skills + changelog em cada push/PR
@@ -94,20 +108,24 @@ ou `"mudança rápida"` para o caminho leve.
 │   │       └── requirements.md
 │   ├── changes/                   # Specs ativas (implementação)
 │   │   └── <nnn>-<slug>/
-│   │       └── spec.md
+│   │       ├── spec.md
+│   │       └── alignment-review.md # Veredito semântico spec↔requisitos (gate de archive)
 │   ├── templates/                 # Templates reutilizáveis
 │   │   ├── requirements-spec.md   # Template de requisitos (15 seções)
 │   │   ├── feature-spec.md        # Template de feature
 │   │   ├── bugfix-spec.md         # Template de bugfix
 │   │   ├── migration-spec.md      # Template de migração
-│   │   └── test-spec.md           # Template de cobertura de testes
+│   │   ├── test-spec.md           # Template de cobertura de testes
+│   │   └── changelog-template.md  # CHANGELOG.md limpo (reset no bootstrap do projeto)
 │   ├── archive/                   # Specs concluídas
-│   ├── memory/                    # Conhecimento persistente
+│   ├── memory/                    # Conhecimento persistente (LLM-Wiki: ver METHODOLOGY.md §6)
 │   │   ├── architecture.md        # ADRs
 │   │   ├── clean-code.md          # Padrões de código limpo (SOLID, métricas)
 │   │   ├── component-catalog.md   # Catálogo de código reutilizável
 │   │   ├── conventions.md         # Convenções de código
-│   │   └── glossary.md            # Glossário de domínio
+│   │   ├── glossary.md            # Glossário de domínio
+│   │   ├── troubleshooting.md     # Memória de erros e estratégias de correção (TRB-NN)
+│   │   └── log.md                 # Journal cronológico append-only (sessão a sessão)
 │   └── shared/                    # Documentos de referência
 │       ├── schema-current.md
 │       ├── schema-target.md
@@ -133,17 +151,10 @@ ou `"mudança rápida"` para o caminho leve.
 
 ## Skills Disponíveis
 
-| Skill | Trigger | Função |
-|---|---|---|
-| `check-consistency` | `"verificar consistência"`, `"check consistency"` | Valida skills, catálogo e convenções |
-| `update-changelog` | `"atualizar changelog"`, `"update changelog"` | Gera changelog a partir do archive |
-| `create-project` | `"criar novo projeto"`, `"create new project"`, `"começar do zero"` | One-shot: clone + limpeza + bootstrap |
-| `init-project` | `"iniciar projeto"`, `"start project"`, `"bootstrap project"` | Bootstrap interativo (projeto já clonado) |
-| `adopt-project` | `"adotar metodologia"`, `"adopt methodology"`, `"adicionar metodologia"` | Adota a metodologia em projeto existente (sem clobber) |
-| `gather-requirements` | `"levantar requisitos"`, `"gather requirements"`, `"elicitar requisitos"` | Elicitação guiada de requisitos |
-| `run-change` | `"mudança rápida"`, `"quick change"`, `"fazer mudança"`, `"run change"` | Roteador de cerimônia: caminho leve vs completo |
-| `run-tdd` | `"executar TDD"`, `"run TDD cycle"`, `"TDD"`, `"write tests"` | Ciclo Red → Green → Refactor |
-| `create-skill` | `"criar skill"`, `"create skill"`, `"adicionar skill"` | Criar novas skills padronizadas |
+O catálogo completo de skills (nome + propósito) é **gerado** em
+[`.claude/skills/INDEX.md`](.claude/skills/INDEX.md) a partir das próprias skills
+(`node scripts/update-skills-index.mjs`), validado pelo `check-consistency` — não há lista mantida à
+mão. Os **gatilhos** (trigger phrases) de cada skill estão na *Referência Rápida de Comandos* abaixo.
 
 ## Tecnologias Suportadas
 
@@ -176,9 +187,12 @@ O starter-kit é agnóstico a tecnologia. Veja `.specs/config.md` para a lista c
 | `"criar novo projeto"` | One-shot: criar projeto do zero (clone + bootstrap) |
 | `"iniciar projeto"` | Bootstrap interativo (projeto já clonado) |
 | `"adotar metodologia"` | Adotar a metodologia em projeto existente (detecta stack, sem clobber) |
+| `"atualizar metodologia"` | Atualizar um projeto que já usa a metodologia para a versão mais nova (só o delta) |
 | `"mudança rápida"` | Roteador de cerimônia: leve vs completo |
 | `"levantar requisitos"` | Iniciar elicitação de requisitos |
+| `"revisar alinhamento"` | Verificar semanticamente se o spec cobre os requisitos (gate de archive) |
 | `"executar TDD"` | Ciclo Red → Green → Refactor |
+| `"registrar troubleshooting"` | Gravar erro + estratégia de correção em `memory/troubleshooting.md` |
 | `"criar skill"` | Criar nova skill padronizada |
 | `"verificar consistência"` | Validar skills, catálogo e convenções |
 | `"atualizar changelog"` | Gerar changelog a partir do archive |

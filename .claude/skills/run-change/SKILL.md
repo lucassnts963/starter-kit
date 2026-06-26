@@ -58,7 +58,9 @@ When in doubt, ask the user one question to disambiguate, then choose.
 
 If the change is non-trivial, do not improvise a spec here — run the `gather-requirements` skill to
 produce `.specs/requirements/<nnn>-<slug>/`, then create the full `changes/<nnn>-<slug>/spec.md`
-from `feature-spec.md`, then `run-tdd`.
+from `feature-spec.md`. Before `run-tdd`, run the `review-alignment` skill to confirm the spec
+actually covers every `REQ-NN` from the requirements doc — this is the requirements→spec transition
+where specs silently drift. Only on an `aligned` verdict proceed to `run-tdd`.
 
 ## Output
 
@@ -87,5 +89,6 @@ create the full spec → `run-tdd`.
 - `AGENTS.md` — when to use lightweight vs full (mirrors this rule)
 - `METHODOLOGY.md` — "When to Skip" requirements
 - `.claude/skills/gather-requirements/SKILL.md` — full path
+- `.claude/skills/review-alignment/SKILL.md` — semantic gate at the requirements→spec transition
 - `.claude/skills/run-tdd/SKILL.md` — TDD cycle for both paths
 - `.specs/templates/bugfix-spec.md`, `.specs/templates/feature-spec.md`

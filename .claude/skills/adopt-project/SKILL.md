@@ -35,7 +35,9 @@ test retrofit is demanded.
 
 1. Confirm this is an existing repo **with code** (e.g., a manifest + a `src/`/equivalent), not an
    empty dir and not a starter-kit (no unfilled `{PROJECT_NAME}` in an existing `AGENTS.md`). If it
-   looks greenfield, suggest `init-project` instead and stop.
+   looks greenfield, suggest `init-project` instead and stop. If the repo **already uses the
+   methodology** (`.specs/config.md` exists, with or without a `## Methodology Version`), this is not
+   a first-time adoption — suggest the `upgrade-methodology` skill instead and stop.
 2. Recommend working on a branch: `git checkout -b chore/adopt-methodology`.
 3. Build a **collision report** — check whether each of these already exists in the target:
    `.claude/skills/`, `.specs/`, `scripts/`, `.github/workflows/`, `AGENTS.md`, `CLAUDE.md`,
@@ -52,11 +54,18 @@ copy **only paths that do not already exist** in the target:
 - `.claude/skills/` (all skills, including this one)
 - `.specs/templates/`, `.specs/memory/` (scaffolds), `.specs/shared/`, `.specs/config.md`,
   `.specs/changes/.gitkeep`, `.specs/archive/.gitkeep`, `.specs/requirements/.gitkeep`
-- `scripts/check-consistency.mjs`, `scripts/update-changelog.mjs`
+- `scripts/` (`check-consistency.mjs`, `update-changelog.mjs`, `update-skills-index.mjs`,
+  `session-context.mjs`)
 - `.github/workflows/consistency.yml`
+- `.claude/settings.json` — only if the project has none. If the project already has one, **merge**
+  the `SessionStart` hook into it (don't overwrite its existing hooks/config). The hook runs
+  `node scripts/session-context.mjs`; opencode ignores this file.
 
 Do **not** copy the kit's `README.md`, `METHODOLOGY.md`, `CHANGELOG.md`, or `LICENSE` over the
-project's own. Remove the temp clone when done.
+project's own. The kit's `CHANGELOG.md` is the *kit's* history — never overlay it. If the project has
+**no** `CHANGELOG.md`, create a clean one from `.specs/templates/changelog-template.md` so the
+`update-changelog` tooling has its `## [Unreleased]` section to write into. Remove the temp clone
+when done.
 
 ### Step 3: Detect the Stack (don't ask blindly)
 
@@ -179,8 +188,9 @@ A report covering:
 
 ## References
 
-- `.specs/config.md` — repository URL, supported stack options, and the canonical Skill Format
+- `.specs/config.md` — repository URL, supported stack options, methodology version, Skill Format
 - `.claude/skills/init-project/SKILL.md` — placeholder→value mapping reused in Step 3
+- `.claude/skills/upgrade-methodology/SKILL.md` — for repos that already adopted the methodology
 - `.claude/skills/run-change/SKILL.md` — first real change after adoption
 - `.specs/memory/conventions.md`, `.specs/memory/component-catalog.md`, `.specs/memory/architecture.md` — scaffolds to draft into
 - `AGENTS.md` — template/host for the methodology sections

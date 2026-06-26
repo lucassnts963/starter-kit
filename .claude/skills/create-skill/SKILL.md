@@ -67,7 +67,8 @@ metadata:
 # <Skill Title>
 
 ## Purpose
-<1–2 sentences describing what this skill accomplishes.>
+<1–2 sentences. The FIRST sentence is pulled verbatim into the generated skills index
+(`.claude/skills/INDEX.md`) — make it a crisp, standalone description of what the skill does.>
 
 ## Prerequisites
 <Context files to read first. Reference `.specs/config.md` for constants instead of hardcoding.>
@@ -105,12 +106,19 @@ Run every check; fix and re-validate on any failure:
 [ ] References section includes `.specs/config.md`
 ```
 
-### Step 6: Run Consistency Check
+### Step 6: Regenerate the Skills Index
+
+Run `node scripts/update-skills-index.mjs` so the new skill appears in `.claude/skills/INDEX.md` (the
+generated catalog). This is required — `check-consistency` fails if the index is out of sync with the
+skill folders.
+
+### Step 7: Run Consistency Check
 
 Run the `check-consistency` skill ("verificar consistência" / "check consistency"). It executes
-`node scripts/check-consistency.mjs`, which validates the whole skill set structurally.
+`node scripts/check-consistency.mjs`, which validates the whole skill set structurally — including
+that the skills index lists exactly the skills that exist.
 
-### Step 7: Confirm with User
+### Step 8: Confirm with User
 
 Show the skill content, validation results, and ask whether the description/triggers are right and
 if any steps are missing.
@@ -119,7 +127,8 @@ if any steps are missing.
 
 1. The created `.claude/skills/<name>/SKILL.md`
 2. Validation results from Step 5
-3. Consistency check report from Step 6
+3. The regenerated `.claude/skills/INDEX.md` entry (Step 6)
+4. Consistency check report from Step 7
 
 ## Examples
 
@@ -151,4 +160,5 @@ missing `## Output` → add it; hardcoded URL → reference `.specs/config.md`. 
 - `.specs/memory/conventions.md` — code conventions
 - `.specs/memory/clean-code.md` — SOLID, metrics, anti-patterns
 - `.claude/skills/check-consistency/SKILL.md` — validation skill
+- `scripts/update-skills-index.mjs` — regenerates `.claude/skills/INDEX.md` from the skills
 - `.claude/skills/` — existing skills directory

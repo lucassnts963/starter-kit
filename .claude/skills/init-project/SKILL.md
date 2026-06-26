@@ -123,7 +123,26 @@ Create `.specs/changes/001-init/spec.md` using the `feature-spec.md` template wi
 > Note: because CHG-001 is now a real spec in `changes/`, the `CHANGELOG.md` entry for it is only
 > created later, by `update-changelog`, after the spec is archived. Do not pre-seed the changelog.
 
-### Step 6: Report Summary
+### Step 6: Reset Project-Identity Files
+
+A project bootstrapped from the kit must not inherit the **kit's own** identity files. Reset them so
+they represent the new project:
+
+1. **`CHANGELOG.md`** — overwrite the kit's changelog with the clean template:
+   copy `.specs/templates/changelog-template.md` to `CHANGELOG.md` (root). The project's history
+   starts empty; `update-changelog` fills it as specs are archived. Do **not** carry over the kit's
+   `[0.1.0] Initial release` or `[Unreleased]` entries.
+2. **`package.json`** (if the project is Node) — set `name` to the project name and `version` to
+   `0.1.0`; keep the `check`/`changelog` scripts. If the project is not Node, leave it as the user's
+   own concern.
+3. **`README.md`** — the kit's README documents the kit. Replace it with a minimal project README
+   (title + one-line description), or ask the user before overwriting. `METHODOLOGY.md` and `LICENSE`
+   may stay as reference.
+
+> The methodology *structure* version stays in `.specs/config.md## Methodology Version` — that one is
+> intentionally carried over, because it records which methodology the project was set up with.
+
+### Step 7: Report Summary
 
 Display a summary table of all decisions and the files created/modified (see Output).
 
@@ -133,8 +152,10 @@ After completing the bootstrap, report:
 1. Project name and technology stack decisions (table)
 2. Files created/modified: `AGENTS.md`, `conventions.md`, `architecture.md` (ADR-003), bootstrap
    requirements + spec
-3. Count of remaining `{PLACEHOLDERS}` to fill
-4. Next steps: scaffold source code, review specs, start first feature with `gather-requirements`
+3. Project-identity files reset: `CHANGELOG.md` (clean), `package.json` name/version (if Node),
+   `README.md`
+4. Count of remaining `{PLACEHOLDERS}` to fill
+5. Next steps: scaffold source code, review specs, start first feature with `gather-requirements`
 
 ## Examples
 
@@ -170,3 +191,4 @@ After completing the bootstrap, report:
 - `.specs/memory/conventions.md` — coding conventions to narrow
 - `.specs/memory/architecture.md` — ADR log (append ADR-003)
 - `.specs/templates/feature-spec.md` — spec template for 001-init
+- `.specs/templates/changelog-template.md` — clean changelog the project's `CHANGELOG.md` is reset from

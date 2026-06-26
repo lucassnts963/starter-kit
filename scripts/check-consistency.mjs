@@ -15,6 +15,9 @@ const SKILLS_DIR = join(ROOT, ".claude", "skills");
 const CONFIG = join(ROOT, ".specs", "config.md");
 const CHANGELOG = join(ROOT, "CHANGELOG.md");
 const ARCHIVE_DIR = join(ROOT, ".specs", "archive");
+const REQUIREMENTS_DIR = join(ROOT, ".specs", "requirements");
+const CHANGES_DIR = join(ROOT, ".specs", "changes");
+const TROUBLESHOOTING = join(ROOT, ".specs", "memory", "troubleshooting.md");
 
 const NAME_RE = /^[a-z]+(-[a-z]+)+$/;
 const CANONICAL_SECTIONS = [
@@ -122,6 +125,23 @@ function checkSkills() {
   }
 }
 
+// --- Check 1b: the generated skills index lists exactly the skills that exist ---
+function checkSkillsIndex() {
+  const indexFile = join(SKILLS_DIR, "INDEX.md");
+  if (!existsSync(indexFile)) {
+    return violate("skills index: .claude/skills/INDEX.md missing — run node scripts/update-skills-index.mjs");
+  }
+  const text = readFileSync(indexFile, "utf8").replace(/\r\n/g, "\n");
+  const listed = new Set([...text.matchAll(/^\|\s*`([a-z][a-z-]+)`\s*\|/gm)].map((m) => m[1]));
+  const dirs = new Set(listSkillDirs());
+  for (const d of dirs)
+    if (!listed.has(d)) violate(`skills index: skill '${d}' exists but is not in INDEX.md (regenerate it)`);
+  for (const n of listed)
+    if (!dirs.has(n)) violate(`skills index: INDEX.md lists '${n}' but no such skill dir (stale — regenerate)`);
+  if (!violations.some((v) => v.startsWith("skills index:")))
+    pass(`skills index: ${dirs.size} skills, INDEX.md in sync`);
+}
+
 // --- Check 2: skills must not hardcode the repo URL (docs/badges may) ---
 function checkHardcoded() {
   const files = walkMarkdown(SKILLS_DIR);
@@ -179,15 +199,150 @@ function checkChangelog() {
     pass(`changelog: ${archivedIds.length} archived specs, all covered`);
 }
 
+// --- Check 5: troubleshooting entries follow the required-field schema ---
+// Only real entries (`TRB-<digits>`) are validated. Commented-out examples are stripped first, so
+// the template's documentation block never counts; the check stays dormant until the first real
+// entry is recorded (mirrors the changelog check, which is skipped while the archive is empty).
+function checkTroubleshooting() {
+  if (!existsSync(TROUBLESHOOTING)) return pass("troubleshooting: file absent (skipped)");
+  const text = readFileSync(TROUBLESHOOTING, "utf8")
+    .replace(/\r\n/g, "\n")
+    .replace(/<!--[\s\S]*?-->/g, ""); // drop commented examples — only live entries are validated
+  const headings = [...text.matchAll(/^## (TRB-\d+):.*$/gm)];
+  if (headings.length === 0) return pass("troubleshooting: no entries yet (skipped)");
+
+  const REQUIRED = ["**Symptom:**", "**Root cause:**", "**Fix strategy:**"];
+  for (let i = 0; i < headings.length; i++) {
+    const id = headings[i][1];
+    const start = headings[i].index;
+    const end = i + 1 < headings.length ? headings[i + 1].index : text.length;
+    const block = text.slice(start, end);
+    const missing = REQUIRED.filter((f) => !block.includes(f));
+    if (missing.length) violate(`troubleshooting: ${id} missing field(s): ${missing.join(", ")}`);
+  }
+  if (!violations.some((v) => v.startsWith("troubleshooting:")))
+    pass(`troubleshooting: ${headings.length} entr${headings.length === 1 ? "y" : "ies"}, all well-formed`);
+}
+
+// --- Traceability + semantic-gate helpers (Checks 6 & 7) ---
+// Structural half of the two-tier consistency model: the script enforces that links and ids line up
+// and that the semantic review (review-alignment skill) ran and passed before archive. It never
+// judges meaning itself — that is the LLM tier's job. All checks are dormant until both a
+// requirements doc and its same-numbered spec exist (mirrors the changelog check on an empty archive).
+function specDirs(dir) {
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir).filter(
+    (d) => d !== ".gitkeep" && statSync(join(dir, d)).isDirectory()
+  );
+}
+function numPrefix(name) {
+  const m = name.match(/^(\d+)-/);
+  return m ? m[1] : null;
+}
+function reqIdSet(text) {
+  return new Set([...text.matchAll(/\bREQ-\d+\b/g)].map((m) => m[0]));
+}
+function readIfExists(p) {
+  return existsSync(p) ? readFileSync(p, "utf8").replace(/\r\n/g, "\n") : null;
+}
+// Find the spec.md for a given requirements number, preferring an archived spec over an active one.
+function findSpec(num) {
+  for (const [base, where] of [[ARCHIVE_DIR, "archive"], [CHANGES_DIR, "changes"]]) {
+    for (const d of specDirs(base)) {
+      if (numPrefix(d) === num) {
+        const spec = readIfExists(join(base, d, "spec.md"));
+        if (spec !== null) return { dir: d, base, where, spec };
+      }
+    }
+  }
+  return null;
+}
+
+// --- Check 6: requirements ↔ spec traceability integrity ---
+function checkTraceability() {
+  const reqDirs = specDirs(REQUIREMENTS_DIR);
+  if (reqDirs.length === 0) return pass("traceability: no requirements docs yet (skipped)");
+
+  let checked = 0;
+  for (const rd of reqDirs) {
+    const num = numPrefix(rd);
+    const reqText = readIfExists(join(REQUIREMENTS_DIR, rd, "requirements.md"));
+    if (!num || reqText === null) continue;
+    const spec = findSpec(num);
+    if (!spec) continue; // requirements written but spec not started yet — valid in-progress state
+    checked++;
+
+    const defined = reqIdSet(reqText);
+    const referenced = reqIdSet(spec.spec);
+
+    // 6a: the spec must trace back — a Requirements Traceability section that links the requirements doc.
+    if (!/##\s+Requirements Traceability/i.test(spec.spec))
+      violate(`traceability: ${spec.where}/${spec.dir}/spec.md missing '## Requirements Traceability' section (requirements ${rd} exists)`);
+    else if (!new RegExp(`requirements/${num}-`).test(spec.spec))
+      violate(`traceability: ${spec.where}/${spec.dir}/spec.md does not link back to requirements/${rd}`);
+
+    // 6b: no dangling references — every REQ the spec cites must exist in the requirements doc.
+    for (const id of referenced)
+      if (!defined.has(id))
+        violate(`traceability: ${spec.where}/${spec.dir}/spec.md references ${id}, absent from requirements/${rd}`);
+  }
+  if (checked === 0) return pass("traceability: no requirements paired with a spec yet (skipped)");
+  if (!violations.some((v) => v.startsWith("traceability:")))
+    pass(`traceability: ${checked} requirements↔spec pair(s) linked, no dangling REQ ids`);
+}
+
+// --- Check 7: semantic-review gate on archived specs (blocking) ---
+// An archived spec that has requirements must carry an alignment-review.md (written by the
+// review-alignment skill) that is complete (covers every defined REQ) and verdict `aligned`.
+function checkAlignmentGate() {
+  if (!existsSync(REQUIREMENTS_DIR) || specDirs(ARCHIVE_DIR).length === 0)
+    return pass("alignment gate: no archived specs yet (skipped)");
+
+  let gated = 0;
+  for (const ad of specDirs(ARCHIVE_DIR)) {
+    const num = numPrefix(ad);
+    const reqDir = num ? findReqDir(num) : null;
+    if (!reqDir) continue; // archived spec without requirements (lightweight path) — gate does not apply
+    const requirements = readIfExists(join(REQUIREMENTS_DIR, reqDir, "requirements.md"));
+    if (requirements === null) continue;
+    gated++;
+
+    const review = readIfExists(join(ARCHIVE_DIR, ad, "alignment-review.md"));
+    if (review === null) {
+      violate(`alignment gate: archive/${ad}/ missing alignment-review.md (run the review-alignment skill before archiving)`);
+      continue;
+    }
+    if (!/\*\*Verdict:\*\*\s*aligned\b/i.test(review))
+      violate(`alignment gate: archive/${ad}/alignment-review.md verdict is not 'aligned'`);
+
+    const defined = reqIdSet(requirements);
+    const reviewed = reqIdSet(review);
+    const unreviewed = [...defined].filter((id) => !reviewed.has(id));
+    if (unreviewed.length)
+      violate(`alignment gate: archive/${ad}/alignment-review.md does not cover ${unreviewed.join(", ")}`);
+  }
+  if (gated === 0) return pass("alignment gate: no archived spec has requirements yet (skipped)");
+  if (!violations.some((v) => v.startsWith("alignment gate:")))
+    pass(`alignment gate: ${gated} archived spec(s) reviewed and aligned`);
+}
+function findReqDir(num) {
+  for (const d of specDirs(REQUIREMENTS_DIR)) if (numPrefix(d) === num) return d;
+  return null;
+}
+
 function rel(p) {
   return p.slice(ROOT.length + 1).replace(/\\/g, "/");
 }
 
 // --- Run ---
 checkSkills();
+checkSkillsIndex();
 checkHardcoded();
 checkOrphans();
 checkChangelog();
+checkTroubleshooting();
+checkTraceability();
+checkAlignmentGate();
 
 console.log("Consistency check\n");
 for (const p of passes) console.log(`  OK   ${p}`);

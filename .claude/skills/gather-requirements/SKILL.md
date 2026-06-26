@@ -98,7 +98,9 @@ empty until the spec and tests are created.
 ### Step 12: Next Steps
 
 Report the file path, a summary (stakeholders, methodology, REQ counts by priority, dependencies,
-risks), and the next step: create `.specs/changes/<nnn>-<slug>/spec.md` with the same `<nnn>`.
+risks), and the next step: create `.specs/changes/<nnn>-<slug>/spec.md` with the same `<nnn>`, then
+run the `review-alignment` skill to verify the spec covers every `REQ-NN` before `run-tdd`. Each
+`REQ-NN` defined here is a contract the spec must trace back to and honor.
 
 ## Output
 
@@ -129,5 +131,6 @@ report.
 
 - `METHODOLOGY.md` — Requirements Engineering section
 - `.specs/templates/requirements-spec.md` — template to fill
+- `.claude/skills/review-alignment/SKILL.md` — verifies the resulting spec honors these requirements
 - `AGENTS.md` — project conventions and context
 - `.specs/memory/glossary.md` — domain terms

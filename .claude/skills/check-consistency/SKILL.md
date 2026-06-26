@@ -5,7 +5,8 @@ description: >-
   deterministic checker script. Use when the user says "check consistency", "verificar consistência",
   "validate skills" or "validar skills", and before committing any skill or config change. Runs
   scripts/check-consistency.mjs (frontmatter, sections, naming, hardcoded URLs, orphan refs,
-  changelog coverage) rather than eyeballing the rules.
+  changelog coverage, troubleshooting schema, requirements↔spec traceability, alignment gate)
+  rather than eyeballing the rules.
 metadata:
   version: 2.0.0
 ---
@@ -42,6 +43,20 @@ The script validates, deterministically:
    renamed files (`tdd-workflow`, `requirements-gathering`).
 4. **Changelog integrity** — every archived spec ID appears in `CHANGELOG.md` and vice-versa
    (skipped when the archive is empty).
+5. **Troubleshooting schema** — every live `TRB-NN` entry in `.specs/memory/troubleshooting.md`
+   carries the required fields (Symptom, Root cause, Fix strategy). Commented examples are ignored;
+   skipped when there are no entries yet.
+6. **Requirements↔spec traceability** — for each requirements doc paired with a same-numbered spec,
+   the spec has a `## Requirements Traceability` section linking back to the requirements doc, and
+   every `REQ-NN` the spec cites exists there (no dangling ids). Skipped until a pair exists.
+7. **Alignment gate** *(blocking on archive)* — an archived, requirements-backed spec must carry an
+   `alignment-review.md` (from the `review-alignment` skill) that covers every defined `REQ-NN` and
+   reads `Verdict: aligned`. This is the structural enforcement of the semantic review; the script
+   checks *that the review ran and passed*, not the meaning itself.
+
+> Tiers 6–7 are the structural half of the two-tier consistency model (`METHODOLOGY.md`). Semantic
+> judgment — whether a spec truly covers a requirement — is the `review-alignment` skill's job, which
+> this gate makes non-skippable.
 
 ### Step 2: Interpret the Result
 

@@ -215,6 +215,38 @@ Every archived spec generates a changelog entry automatically. The changelog liv
 
 **Workflow:** after moving a spec to archive, run `"atualizar changelog"` or `"update changelog"`. Validate coverage with `"verificar consistência"`.
 
+### Two-Tier Consistency: Structure vs. Semantics
+
+A deterministic script can prove that `REQ-03` *appears* in a spec; it cannot prove the spec *means*
+to address what `REQ-03` says. Generated specs drift — silently dropping requirements that were
+written down. This methodology guards that boundary with **two complementary tiers**:
+
+| Tier | Question it answers | How | Tool |
+|---|---|---|---|
+| **Structural** (deterministic) | Do the links and ids line up? Any orphan/dangling/missing-schema? | A script, in CI | `check-consistency.mjs` |
+| **Semantic** (LLM) | Does the spec *faithfully cover* each requirement? Omissions, contradictions, scope drift? | An adversarial LLM review | `review-alignment` skill |
+
+The two tiers are wired together so neither is skippable:
+
+1. **Prevention** — `feature-spec.md` requires a `## Requirements Traceability` section that links the
+   requirements doc (a relative Markdown link, portable to GitHub *and* Obsidian) and lists every
+   `REQ-NN`. The canonical join key is the **id**, not the link syntax — the checker resolves
+   traceability by `REQ-NN`, so the kit stays 100% file-based and tool-agnostic (no Obsidian
+   dependency, no link database).
+2. **Detection** — at the requirements→spec transition, the `review-alignment` skill judges each
+   `REQ-NN` (`Covered` / `Partial` / `Missing` / `Contradicted`) with cited evidence and writes
+   `alignment-review.md`. It defaults to the worse verdict when coverage is not explicit, to counter
+   rubber-stamping.
+3. **Enforcement** — `check-consistency.mjs` verifies the structural links (traceability present, no
+   dangling `REQ` ids) and **gates the archive**: a requirements-backed spec cannot be archived until
+   its `alignment-review.md` exists, covers every defined `REQ-NN`, and reads `Verdict: aligned`. The
+   script enforces *that the review ran and passed*; the LLM does the judging.
+
+This is the complete form of a wiki "lint" (à la Karpathy): orphan/dangling/gap checks are
+deterministic; contradiction and omission checks are delegated to the LLM tier — each check handled
+by the mechanism suited to it. The gate is **blocking on archive** (the error is caught before it
+becomes history) and advisory mid-flight (no LLM call on every commit).
+
 ---
 
 ## 4. TDD Integration (Test-Driven Development)
@@ -375,6 +407,42 @@ Map between different terminologies:
 - Status value mappings
 - Legacy ↔ modern table names
 
+### `troubleshooting.md` — Error & Fix Memory
+
+Topical memory of problems hit and the strategies that resolved them. The failure-mode counterpart of
+`component-catalog.md`: where the catalog says "reuse, don't recreate", troubleshooting says
+"don't re-debug from zero". Each entry (`TRB-NN`) records Symptom → Context → Root cause → Fix
+strategy → Prevention, and links back to the `FIX-NN` spec, commit, or PR it was compiled from.
+
+- **Search before debugging** — grep for the symptom; reuse the recorded strategy if it's there.
+- **Record after resolving** — use the `record-troubleshooting` skill to append a well-formed entry.
+- **Distinct from `bugfix-spec.md`** — the spec is the per-incident *event* (archived); this is the
+  distilled *cross-incident lesson*. `check-consistency` validates the required fields of each entry.
+
+### `log.md` — Working Journal (append-only)
+
+Chronological record of what agents did and learned, session by session. This is the running memory
+that makes the knowledge base *compounding* instead of re-derived every session: at the end of a work
+block, append one short entry (Did / Learned / Next / Refs). Newest at the bottom; never rewrite
+history. It complements the `CHANGELOG.md` — the changelog answers *"what shipped"*, the log answers
+*"what was I doing, and why, last session"*.
+
+**Session continuity (where you left off).** The log feeds an automatic resume: `scripts/session-context.mjs`
+prints the latest log entry (and its `Next:` line), the specs in flight with their alignment-gate
+state, and any requirements without a spec. A Claude Code **SessionStart hook** (`.claude/settings.json`)
+injects this at the start of every session; the `resume-session` skill (`"onde paramos"` /
+`"where did I leave off"`) runs the same summary on demand and in opencode (which has no hook). The
+script is silent when there is nothing to resume, and never disrupts a session.
+
+> **Memory as an LLM-Wiki.** The `memory/` directory is, in effect, a project-decision wiki in the
+> sense of [Karpathy's LLM-Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f):
+> a persistent, compounding artifact the agent maintains — curated pages (ADRs, conventions, catalog),
+> a content index (`glossary.md`, `component-catalog.md`), an append-only `log.md`, and a topical
+> `troubleshooting.md`. The agent does the bookkeeping (summarizing, cross-referencing, filing); the
+> human curates and directs. The kit's twist over a generic wiki: its **lint is deterministic**
+> (`check-consistency.mjs` + CI), not LLM-judged, and it deliberately stays **100% file-based** — no
+> server, database, or embedding index — to preserve portability across any language and Git host.
+
 ---
 
 ## 7. `shared/` — Reference Documents
@@ -515,6 +583,47 @@ greenfield bootstrap in three ways:
 Legacy code gets a **forward-only TDD baseline**: the current coverage is recorded as a floor that CI
 must not regress, and TDD + clean-code thresholds apply to new or changed code — never as a
 retroactive gate.
+
+### Three Entry Paths (and how to stay current)
+
+There are three distinct situations, each with its own skill — pick by where your project is:
+
+| Situation | Skill | What it does |
+|---|---|---|
+| **Brand-new project** (nothing yet) | `create-project` → `init-project` | Clone the kit, clean git, ask the 9 stack questions, fill the templates. |
+| **Existing project with code** (no methodology) | `adopt-project` | Detect the stack, overlay the methodology without clobbering, draft memory from real code. |
+| **Project already on the methodology** (older version) | `upgrade-methodology` | Compare the project's methodology version to the kit's latest and apply only the delta, non-destructively. |
+
+The first two **always pull in the current methodology** — they copy `.claude/skills/` and `.specs/`
+wholesale from the kit, so a fresh setup includes every skill and memory page that exists today. The
+third exists for projects set up *before* a given improvement landed: it brings them forward without
+re-running setup.
+
+### Upgrading an existing methodology project
+
+The methodology structure is **versioned** (`.specs/config.md## Methodology Version`). Every project
+carries the version it was set up with, because all three entry skills copy `config.md` into it. To
+pull newer improvements (new skills, templates, scripts, memory pages, or checker rules) into a
+project that already uses the methodology, run the **`upgrade-methodology`** skill
+(`"atualizar metodologia"` / `"upgrade methodology"`). It is version-aware and non-destructive:
+
+- **Diff, don't reinstall.** It clones the latest kit, compares it to the project, and applies **only
+  what is missing or outdated** — new files are added, kit-owned tooling/skills are refreshed, and
+  methodology sections are *appended* to project-owned docs (`AGENTS.md`) rather than overwriting them.
+- **Never clobbers project content.** Customized files that would collide are placed alongside with a
+  `.kit` suffix for you to reconcile — same golden rule as `adopt-project`.
+- **Stamps the new version.** On success it bumps `config.md## Methodology Version` and reports the
+  applied delta, so the next upgrade starts from the right baseline.
+
+### Methodology Versions
+
+The structure version (skills + templates + scripts + memory layout), independent of any project's
+own product version:
+
+| Version | Date | What it introduced |
+|---|---|---|
+| **1.0.0** | 2026-06-02 | Initial methodology: requirements → spec → TDD, memory docs (ADRs, conventions, clean-code, component-catalog, glossary), `check-consistency` + `update-changelog`, the core skills. |
+| **1.1.0** | 2026-06-26 | Memory-as-LLM-Wiki: `troubleshooting.md` + `record-troubleshooting`, append-only `log.md`. Two-tier consistency: `review-alignment` skill + requirements↔spec traceability and the blocking alignment gate in `check-consistency`. `upgrade-methodology` skill + methodology versioning. Clean `changelog-template.md` so bootstrapped projects don't inherit the kit's changelog. Generated skills index (`.claude/skills/INDEX.md`) as the single source for the skills catalog. Session continuity: `session-context.mjs` + SessionStart hook + `resume-session` skill ("where you left off"). |
 
 ---
 
