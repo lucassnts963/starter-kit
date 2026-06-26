@@ -9,7 +9,7 @@ values. This file is harness-agnostic — it is not specific to any agent tool.
 
 ## Methodology Version
 
-- **Version:** 1.1.0
+- **Version:** 1.2.0
 
 This is the version of the methodology *structure* — skills, templates, scripts, and the `.specs/`
 memory layout — that this project was bootstrapped or last upgraded to. It is **not** the project's

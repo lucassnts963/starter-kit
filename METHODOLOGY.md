@@ -630,6 +630,20 @@ own product version:
 |---|---|---|
 | **1.0.0** | 2026-06-02 | Initial methodology: requirements → spec → TDD, memory docs (ADRs, conventions, clean-code, component-catalog, glossary), `check-consistency` + `update-changelog`, the core skills. |
 | **1.1.0** | 2026-06-26 | Memory-as-LLM-Wiki: `troubleshooting.md` + `record-troubleshooting`, append-only `log.md`. Two-tier consistency: `review-alignment` skill + requirements↔spec traceability and the blocking alignment gate in `check-consistency`. `upgrade-methodology` skill + methodology versioning. Clean `changelog-template.md` so bootstrapped projects don't inherit the kit's changelog. Generated skills index (`.claude/skills/INDEX.md`) as the single source for the skills catalog. Session continuity: `session-context.mjs` + SessionStart hook + `resume-session` skill ("where you left off"). |
+| **1.2.0** | 2026-06-26 | `spec-kit` CLI (deterministic init/adopt/upgrade/check via npx) + `reconcile-upgrade` skill for the post-upgrade judgment phase. Forward-only baseline (`.specs/baseline.json`) so upgrading a mature repo never fails CI retroactively. Bilingual + groupable troubleshooting schema. **AGENTS.md ↔ methodology split:** kit-owned rules moved to `.specs/methodology.md` (imported by `AGENTS.md`), so upgrades replace one file and never touch the project-owned `AGENTS.md`. |
+
+---
+
+### The AGENTS.md ↔ Methodology Split
+
+`AGENTS.md` is **project-owned** (stack, commands, architecture, conventions, testing values). The
+methodology's *operational rules* — Key Rules, change path, skills, the memory/consistency model — are
+**kit-owned** and live in `.specs/methodology.md`, imported by `AGENTS.md` via `@.specs/methodology.md`
+(with a prose pointer so harnesses that don't expand the import still read the file). Because the rules
+are no longer inline in `AGENTS.md`, a methodology **upgrade replaces `.specs/methodology.md` wholesale
+and never edits `AGENTS.md`** — eliminating the per-upgrade diff and clobber risk on the project's own
+instruction file. Existing projects are migrated to the split by the `reconcile-upgrade` skill (it
+extracts the inline sections into the import, preserving project content).
 
 ---
 

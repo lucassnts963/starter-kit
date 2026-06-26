@@ -105,6 +105,14 @@ review. Then move the spec to `archive/` and run `node scripts/check-consistency
 gate is green. Finally, run the `update-changelog` skill ("atualizar changelog" / "update
 changelog"). If the spec is still in `changes/`, skip the archive/changelog steps.
 
+### Step 11: Append a Working-Log Entry
+
+Close the loop on the memory: append one dated block to `.specs/memory/log.md` — **Did** (the spec id
+and what shipped), **Learned** (any non-obvious gotcha → also record a `TRB-` entry), **Next** (the
+immediate next step), **Refs** (spec id, commits). This is what `resume-session` reads next time; the
+journal is only useful if it is fed. A non-trivial debug during the cycle also earns a
+`record-troubleshooting` entry.
+
 ## Output
 
 After completing the cycle, report: tests written, tests passing, coverage %, files created/modified,

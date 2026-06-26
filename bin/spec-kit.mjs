@@ -70,6 +70,7 @@ function ensureGitkeep(relDir) {
 const TOOLING = [
   "scripts/check-consistency.mjs", "scripts/update-changelog.mjs", "scripts/update-skills-index.mjs",
   "scripts/session-context.mjs", "scripts/cut-release.mjs", ".github/workflows/consistency.yml",
+  ".specs/methodology.md", // kit-owned methodology rules imported by AGENTS.md — refreshed wholesale
 ];
 // Additive scaffold: copied only when absent (never clobbers project content).
 const ADDITIVE_DIRS = [".claude/skills", ".specs/templates", ".specs/memory", ".specs/shared"];
@@ -104,7 +105,15 @@ function writeBaselineIfCrossing(from, to) {
     : [];
   writeFileSync(
     baselinePath,
-    JSON.stringify({ methodologyBaseline: to, grandfatheredArchive: dirs }, null, 2) + "\n"
+    JSON.stringify(
+      {
+        methodologyBaseline: to,
+        note: "One-time snapshot taken at upgrade. It does NOT grow — specs archived after this point must comply with the traceability/alignment checks (no grandfathering past the baseline).",
+        grandfatheredArchive: dirs,
+      },
+      null,
+      2
+    ) + "\n"
   );
   return dirs.length;
 }
@@ -178,9 +187,10 @@ function cmdUpgrade() {
   if (grandfathered !== null)
     log(`✓ forward-only baseline written: ${grandfathered} pre-existing archived spec(s) grandfathered (exempt from the new traceability/alignment checks)`);
   log(`\nNext — run the reconcile-upgrade skill ("ajustar arquivos da metodologia") for the judgment steps:`);
-  log("  • merge any new methodology sections / Key Rules into AGENTS.md (the skills list is auto-generated)");
+  log("  • migrate AGENTS.md to the methodology split: move any inline rules into the @.specs/methodology.md import");
   log("  • adapt existing files to new conventions (e.g. give troubleshooting.md TRB-NN ids)");
   log("  • reconcile files you customized that this refresh overwrote (git diff shows them)");
+  log("  • record the upgrade in .specs/memory/log.md");
   log("\nThen: node scripts/check-consistency.mjs  (new checks stay dormant until you have the artifacts).");
 }
 

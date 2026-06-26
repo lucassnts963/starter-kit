@@ -65,7 +65,9 @@ Read `AGENTS.md` and replace placeholders with the user's answers:
 | `{STYLING_APPROACH}`, `{UI_LIBRARY}`, `{STATE_MANAGEMENT}`, `{FORM_PATTERN}`, `{ROUTING_STRATEGY}`, `{AUTH_MECHANISM}`, `{NAMING_CONVENTION}`, `{ID_STRATEGY}` | Ask or leave as placeholder |
 
 **IMPORTANT:** Only replace placeholders the user explicitly answered. Leave others as
-`{PLACEHOLDER}` for later.
+`{PLACEHOLDER}` for later. `AGENTS.md` holds only project content now; its `## Methodology` section
+just imports the kit-owned `.specs/methodology.md` (Key Rules, change path, skills) — leave that
+import as-is, there is nothing to fill there.
 
 ### Step 3: Update conventions.md
 

@@ -5,6 +5,7 @@ This project uses `AGENTS.md` as the single, harness-agnostic instruction source
 
 @AGENTS.md
 
-Skills live in `.claude/skills/<name>/SKILL.md` and are discovered automatically. See the **Skills**
-and **Choosing the Change Path** sections in `AGENTS.md`, and `.specs/config.md## Skill Format`
-for how skills are structured.
+`AGENTS.md` is project-owned (stack, commands, architecture, conventions) and imports the kit-owned
+methodology rules from `.specs/methodology.md` (Key Rules, change path, skills, memory/consistency
+model). Skills live in `.claude/skills/<name>/SKILL.md`, are discovered automatically, and are
+catalogued in `.claude/skills/INDEX.md`; format rules in `.specs/config.md## Skill Format`.

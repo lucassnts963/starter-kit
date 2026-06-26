@@ -15,6 +15,16 @@ Generated automatically from `.specs/archive/` via the `update-changelog` skill.
   Solves the bootstrap chicken-egg (no manual clone) and makes the mechanical file ops reliable.
 
 ### Changed
+- **AGENTS.md ↔ methodology split.** Kit-owned methodology rules (Key Rules, change path, skills,
+  memory/consistency model) moved out of `AGENTS.md` into `.specs/methodology.md`, imported via
+  `@.specs/methodology.md`. `AGENTS.md` is now purely project-owned (stack, commands, architecture,
+  conventions, testing values), so a methodology upgrade replaces one kit-owned file and **never
+  touches `AGENTS.md`** — no per-upgrade diff or clobber risk. `reconcile-upgrade` migrates existing
+  projects to the split. (From real-adoption feedback.)
+- **Provenance + grandfathering clarity:** `reconcile-upgrade` and `run-tdd` now feed
+  `.specs/memory/log.md` (the upgrade record and end-of-cycle entry); `baseline.json` carries a note
+  that it is a one-time snapshot that does not grow; `methodology.md` Rule 7 states no grandfathering
+  past the baseline.
 - **Troubleshooting schema is now bilingual and groupable.** `check-consistency` accepts the required
   fields in English **or** Portuguese (`Sintoma`/`Causa`/`Solução`) and validates entries whether flat
   (`## TRB-NN`) or grouped by area (`## <Area>` + `### TRB-NN`). Previously a pt-BR or area-grouped

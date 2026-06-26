@@ -41,13 +41,22 @@ list the conventions/artifacts each applied version introduced. Run `git status`
 to see exactly what the upgrade added, refreshed, and stamped. Present a short plan of what will be
 reconciled before touching anything.
 
-### Step 2: Merge new sections into AGENTS.md (project-owned)
+### Step 2: Reconcile AGENTS.md ↔ methodology split (project-owned)
 
-The upgrade never edits `AGENTS.md`. For each new methodology section or **Key Rule** the applied
-versions added, check whether the project's `AGENTS.md` already has it; if not, propose **appending**
-it in a clearly marked block, preserving the project's own content. Show the proposed text and confirm
-before writing. Do **not** hand-maintain a skills table — the catalog is generated in
-`.claude/skills/INDEX.md`.
+The upgrade never edits `AGENTS.md`; the methodology rules are kit-owned in `.specs/methodology.md`
+(refreshed wholesale). Reconcile the boundary:
+
+- **Migrating a pre-split project (1.2.0):** if the project's `AGENTS.md` still has the methodology
+  sections inline (`## Key Rules`, `## Choosing the Change Path`, `## Skills`, the LLM-Wiki/memory
+  bullets), they now duplicate `.specs/methodology.md`. **Remove those sections** from `AGENTS.md`,
+  keeping all project content (stack, commands, architecture, conventions, testing values), and add a
+  `## Methodology` section that imports the file: a one-line `@.specs/methodology.md` plus the
+  "read and follow them" sentence. Confirm the diff before writing — the goal is that future upgrades
+  never touch `AGENTS.md` again.
+- **Already split:** nothing to do here. Never hand-maintain a skills table — the catalog is generated
+  in `.claude/skills/INDEX.md`.
+- Any genuinely **project-relevant** new section a version introduces (rare) is appended to
+  `AGENTS.md`, preserving existing content.
 
 ### Step 3: Reconcile overwritten tooling
 
@@ -71,7 +80,9 @@ read the Methodology Versions notes):
   add it. Legacy archived specs are grandfathered by `.specs/baseline.json` — confirm it exists.
 - **Forward-only baseline (1.1.0):** if the project had pre-existing archived specs and
   `.specs/baseline.json` is missing, create it (snapshot the current `.specs/archive/*` dirs) so legacy
-  specs are exempt.
+  specs are exempt. The baseline is a one-time snapshot — it does not grow.
+- **AGENTS.md ↔ methodology split (1.2.0):** handled in Step 2 — extract inline methodology sections
+  from `AGENTS.md` into the `@.specs/methodology.md` import.
 
 For anything the version introduced that isn't listed here, infer the adaptation from the Methodology
 Versions notes and the new files, and propose it.
@@ -82,7 +93,14 @@ Run `node scripts/check-consistency.mjs` (or `spec-kit check`). Resolve each vio
 re-running until it exits `0`. New checks stay dormant until their artifacts exist, so a green result
 means the adaptations are complete.
 
-### Step 6: Hand Off the Commit
+### Step 6: Record the Upgrade in the Working Log
+
+Append a dated entry to `.specs/memory/log.md` recording the upgrade as provenance: **Did** "methodology
+upgrade `<from> → <to>`", **Learned** the delta summary (what conventions changed), **Next** any
+follow-up, **Refs** the new version. This is the per-project audit trail of when and what was upgraded —
+the reproducible apply lives in `spec-kit upgrade`, this is the record that it ran.
+
+### Step 7: Hand Off the Commit
 
 Summarize everything reconciled. Remind the user to commit (this skill edits files; it never runs git,
 push, tag, or any outward-facing step).
