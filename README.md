@@ -79,7 +79,7 @@ ou `"mudança rápida"` para o caminho leve.
 │   └── skills/                     # Skills (descobertas por opencode E Claude Code)
 │       └── <nome>/SKILL.md         # Uma pasta por skill, com frontmatter name+description
 │           # check-consistency, create-project, create-skill, gather-requirements,
-│           # init-project, run-change, run-tdd, update-changelog
+│           # init-project, record-troubleshooting, run-change, run-tdd, update-changelog
 │
 ├── scripts/
 │   ├── check-consistency.mjs       # Validador determinístico (roda no CI)
@@ -102,12 +102,14 @@ ou `"mudança rápida"` para o caminho leve.
 │   │   ├── migration-spec.md      # Template de migração
 │   │   └── test-spec.md           # Template de cobertura de testes
 │   ├── archive/                   # Specs concluídas
-│   ├── memory/                    # Conhecimento persistente
+│   ├── memory/                    # Conhecimento persistente (LLM-Wiki: ver METHODOLOGY.md §6)
 │   │   ├── architecture.md        # ADRs
 │   │   ├── clean-code.md          # Padrões de código limpo (SOLID, métricas)
 │   │   ├── component-catalog.md   # Catálogo de código reutilizável
 │   │   ├── conventions.md         # Convenções de código
-│   │   └── glossary.md            # Glossário de domínio
+│   │   ├── glossary.md            # Glossário de domínio
+│   │   ├── troubleshooting.md     # Memória de erros e estratégias de correção (TRB-NN)
+│   │   └── log.md                 # Journal cronológico append-only (sessão a sessão)
 │   └── shared/                    # Documentos de referência
 │       ├── schema-current.md
 │       ├── schema-target.md
@@ -143,6 +145,7 @@ ou `"mudança rápida"` para o caminho leve.
 | `gather-requirements` | `"levantar requisitos"`, `"gather requirements"`, `"elicitar requisitos"` | Elicitação guiada de requisitos |
 | `run-change` | `"mudança rápida"`, `"quick change"`, `"fazer mudança"`, `"run change"` | Roteador de cerimônia: caminho leve vs completo |
 | `run-tdd` | `"executar TDD"`, `"run TDD cycle"`, `"TDD"`, `"write tests"` | Ciclo Red → Green → Refactor |
+| `record-troubleshooting` | `"registrar troubleshooting"`, `"record troubleshooting"`, `"registrar solução"` | Grava erro/correção em `memory/troubleshooting.md` |
 | `create-skill` | `"criar skill"`, `"create skill"`, `"adicionar skill"` | Criar novas skills padronizadas |
 
 ## Tecnologias Suportadas
@@ -179,6 +182,7 @@ O starter-kit é agnóstico a tecnologia. Veja `.specs/config.md` para a lista c
 | `"mudança rápida"` | Roteador de cerimônia: leve vs completo |
 | `"levantar requisitos"` | Iniciar elicitação de requisitos |
 | `"executar TDD"` | Ciclo Red → Green → Refactor |
+| `"registrar troubleshooting"` | Gravar erro + estratégia de correção em `memory/troubleshooting.md` |
 | `"criar skill"` | Criar nova skill padronizada |
 | `"verificar consistência"` | Validar skills, catálogo e convenções |
 | `"atualizar changelog"` | Gerar changelog a partir do archive |

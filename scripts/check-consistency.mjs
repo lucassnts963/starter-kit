@@ -15,6 +15,7 @@ const SKILLS_DIR = join(ROOT, ".claude", "skills");
 const CONFIG = join(ROOT, ".specs", "config.md");
 const CHANGELOG = join(ROOT, "CHANGELOG.md");
 const ARCHIVE_DIR = join(ROOT, ".specs", "archive");
+const TROUBLESHOOTING = join(ROOT, ".specs", "memory", "troubleshooting.md");
 
 const NAME_RE = /^[a-z]+(-[a-z]+)+$/;
 const CANONICAL_SECTIONS = [
@@ -179,6 +180,31 @@ function checkChangelog() {
     pass(`changelog: ${archivedIds.length} archived specs, all covered`);
 }
 
+// --- Check 5: troubleshooting entries follow the required-field schema ---
+// Only real entries (`TRB-<digits>`) are validated. Commented-out examples are stripped first, so
+// the template's documentation block never counts; the check stays dormant until the first real
+// entry is recorded (mirrors the changelog check, which is skipped while the archive is empty).
+function checkTroubleshooting() {
+  if (!existsSync(TROUBLESHOOTING)) return pass("troubleshooting: file absent (skipped)");
+  const text = readFileSync(TROUBLESHOOTING, "utf8")
+    .replace(/\r\n/g, "\n")
+    .replace(/<!--[\s\S]*?-->/g, ""); // drop commented examples — only live entries are validated
+  const headings = [...text.matchAll(/^## (TRB-\d+):.*$/gm)];
+  if (headings.length === 0) return pass("troubleshooting: no entries yet (skipped)");
+
+  const REQUIRED = ["**Symptom:**", "**Root cause:**", "**Fix strategy:**"];
+  for (let i = 0; i < headings.length; i++) {
+    const id = headings[i][1];
+    const start = headings[i].index;
+    const end = i + 1 < headings.length ? headings[i + 1].index : text.length;
+    const block = text.slice(start, end);
+    const missing = REQUIRED.filter((f) => !block.includes(f));
+    if (missing.length) violate(`troubleshooting: ${id} missing field(s): ${missing.join(", ")}`);
+  }
+  if (!violations.some((v) => v.startsWith("troubleshooting:")))
+    pass(`troubleshooting: ${headings.length} entr${headings.length === 1 ? "y" : "ies"}, all well-formed`);
+}
+
 function rel(p) {
   return p.slice(ROOT.length + 1).replace(/\\/g, "/");
 }
@@ -188,6 +214,7 @@ checkSkills();
 checkHardcoded();
 checkOrphans();
 checkChangelog();
+checkTroubleshooting();
 
 console.log("Consistency check\n");
 for (const p of passes) console.log(`  OK   ${p}`);

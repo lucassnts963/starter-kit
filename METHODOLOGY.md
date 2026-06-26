@@ -375,6 +375,35 @@ Map between different terminologies:
 - Status value mappings
 - Legacy ↔ modern table names
 
+### `troubleshooting.md` — Error & Fix Memory
+
+Topical memory of problems hit and the strategies that resolved them. The failure-mode counterpart of
+`component-catalog.md`: where the catalog says "reuse, don't recreate", troubleshooting says
+"don't re-debug from zero". Each entry (`TRB-NN`) records Symptom → Context → Root cause → Fix
+strategy → Prevention, and links back to the `FIX-NN` spec, commit, or PR it was compiled from.
+
+- **Search before debugging** — grep for the symptom; reuse the recorded strategy if it's there.
+- **Record after resolving** — use the `record-troubleshooting` skill to append a well-formed entry.
+- **Distinct from `bugfix-spec.md`** — the spec is the per-incident *event* (archived); this is the
+  distilled *cross-incident lesson*. `check-consistency` validates the required fields of each entry.
+
+### `log.md` — Working Journal (append-only)
+
+Chronological record of what agents did and learned, session by session. This is the running memory
+that makes the knowledge base *compounding* instead of re-derived every session: at the end of a work
+block, append one short entry (Did / Learned / Next / Refs). Newest at the bottom; never rewrite
+history. It complements the `CHANGELOG.md` — the changelog answers *"what shipped"*, the log answers
+*"what was I doing, and why, last session"*.
+
+> **Memory as an LLM-Wiki.** The `memory/` directory is, in effect, a project-decision wiki in the
+> sense of [Karpathy's LLM-Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f):
+> a persistent, compounding artifact the agent maintains — curated pages (ADRs, conventions, catalog),
+> a content index (`glossary.md`, `component-catalog.md`), an append-only `log.md`, and a topical
+> `troubleshooting.md`. The agent does the bookkeeping (summarizing, cross-referencing, filing); the
+> human curates and directs. The kit's twist over a generic wiki: its **lint is deterministic**
+> (`check-consistency.mjs` + CI), not LLM-judged, and it deliberately stays **100% file-based** — no
+> server, database, or embedding index — to preserve portability across any language and Git host.
+
 ---
 
 ## 7. `shared/` — Reference Documents

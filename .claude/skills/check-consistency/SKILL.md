@@ -5,7 +5,7 @@ description: >-
   deterministic checker script. Use when the user says "check consistency", "verificar consistência",
   "validate skills" or "validar skills", and before committing any skill or config change. Runs
   scripts/check-consistency.mjs (frontmatter, sections, naming, hardcoded URLs, orphan refs,
-  changelog coverage) rather than eyeballing the rules.
+  changelog coverage, troubleshooting schema) rather than eyeballing the rules.
 metadata:
   version: 2.0.0
 ---
@@ -42,6 +42,9 @@ The script validates, deterministically:
    renamed files (`tdd-workflow`, `requirements-gathering`).
 4. **Changelog integrity** — every archived spec ID appears in `CHANGELOG.md` and vice-versa
    (skipped when the archive is empty).
+5. **Troubleshooting schema** — every live `TRB-NN` entry in `.specs/memory/troubleshooting.md`
+   carries the required fields (Symptom, Root cause, Fix strategy). Commented examples are ignored;
+   skipped when there are no entries yet.
 
 ### Step 2: Interpret the Result
 

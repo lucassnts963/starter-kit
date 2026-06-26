@@ -52,6 +52,9 @@ Full conventions in `.specs/memory/conventions.md`. Summary:
 - **IDs:** {ID_STRATEGY}
 - **Clean Code:** SOLID principles in `.specs/memory/clean-code.md`
 - **Reusable code:** catalog in `.specs/memory/component-catalog.md` — check before creating, add after creating
+- **Memory as an LLM-Wiki:** `.specs/memory/` is a persistent, compounding knowledge base the agent maintains (inspired by [Karpathy's LLM-Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)) — curated pages (ADRs, conventions, catalog), an append-only journal (`log.md`), and a topical error memory (`troubleshooting.md`). Compile durable knowledge; don't re-derive it.
+- **Troubleshooting:** after a non-trivial debug, record the lesson in `.specs/memory/troubleshooting.md` via the `record-troubleshooting` skill — search it before debugging something familiar
+- **Working log:** append a short block to `.specs/memory/log.md` at the end of a work session (what you did, learned, next) so the next session resumes without re-reading everything
 - **Changelog:** generated from `.specs/archive/` via `update-changelog` skill, validated by `check-consistency`
 
 ---
@@ -81,6 +84,7 @@ Full testing conventions in `.specs/memory/conventions.md## Testing`.
 5. **New adapter pattern:** for external services, create adapter → inject into service → test with mock
 6. **Keep AGENTS.md updated** as the project evolves — it is the primary instruction source for agents
 7. **Maintain consistency** — run `node scripts/check-consistency.mjs` (or `"verificar consistência"`) before committing skill or config changes. Never hardcode config values; reference `.specs/config.md`.
+8. **Feed the memory** — search `memory/troubleshooting.md` before debugging; after a non-trivial fix, record a `TRB-` entry; at the end of a work session, append a block to `memory/log.md`. Memory that isn't written is re-derived.
 
 ---
 
@@ -97,6 +101,7 @@ Format rules: `.specs/config.md## Skill Format`.
 | `gather-requirements` | Elicit requirements for a non-trivial change → `.specs/requirements/`. |
 | `run-change` | Decide ceremony (lightweight vs full) and drive small changes end to end. |
 | `run-tdd` | Drive the Red → Green → Refactor cycle for an active spec. |
+| `record-troubleshooting` | Append a distilled error/fix entry to `memory/troubleshooting.md` after a non-trivial debug. |
 | `update-changelog` | Generate `CHANGELOG.md` entries from archived specs (script-backed). |
 | `check-consistency` | Validate skills/conventions via `scripts/check-consistency.mjs`. |
 | `create-skill` | Author a new skill in the canonical format. |
